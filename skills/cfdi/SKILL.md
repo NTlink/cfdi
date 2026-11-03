@@ -23,11 +23,8 @@ El nombre npm es `@ntlinkmx/nt`; el comando instalado es `nt`.
 
 - Las instalaciones nuevas comienzan en modo `pruebas`. `nt mode` informa el modo sin mostrar la dirección del servidor; `nt mode pruebas` vuelve al entorno de pruebas.
 - Producción todavía no existe. `nt mode production` solo muestra “próximamente” y deja activo el modo actual. No inventes una URL de producción ni afirmes que ese entorno está disponible.
-- En pruebas, el primer comando que necesita autenticación inicia sesión automáticamente con la cuenta pública compartida:
-  - Correo: `URE180429TM6@ntlink.com.mx`
-  - Contraseña: `NTPruebas.2021*?`
-- La cuenta de demostración tiene permisos de administrador y sus datos son compartidos. Úsala únicamente para pruebas. La API de pruebas utiliza HTTP sin TLS; nunca envíes contraseñas de producción a ese entorno.
-- Para cambiar a otra cuenta ejecuta `nt auth login`; el CLI pide correo y contraseña sin mostrar la contraseña al escribir.
+- El perfil nuevo apunta al servidor remoto de `pruebas`; la primera operación protegida inicia sesión automáticamente con la cuenta pública de demostración. Correo: `URE180429TM6@ntlink.com.mx`; contraseña: `NTPruebas.2021*?`. Usa esta cuenta únicamente para pruebas compartidas.
+- Ese entorno de pruebas usa HTTP. El CLI permite automáticamente HTTP solo para su origen de pruebas configurado. Otros orígenes HTTP requieren `nt config set --allow-insecure-http` y generan una advertencia en cada solicitud. Producción todavía no está disponible.
 - El token se guarda en `~/.ntlink-invoice/config.json` (Windows: `%USERPROFILE%\.ntlink-invoice\config.json`). No muestres ni compartas el token.
 
 ## Qué formatos acepta
@@ -35,7 +32,7 @@ El nombre npm es `@ntlinkmx/nt`; el comando instalado es `nt`.
 | Archivo | Uso en el CLI | Qué permite | Límite del chat |
 |---|---|---|---|
 | PDF | `nt chat attach archivo.pdf` o `nt chat send ID "Analiza esta factura" --attach archivo.pdf` | Extraer texto/OCR y analizar el documento en el chat. No se timbra directamente desde PDF. | 5 MB y 30 páginas |
-| XML | `nt cfdi validate factura.xml`; también puede adjuntarse al chat o enviarse como cuerpo raw por `nt api` | Validar, revisar y analizar un XML; consultar o descargar XML de un CFDI existente. No es entrada directa de `nt cfdi stamp`. | Adjuntos de chat hasta 1 MB |
+| XML | `nt cfdi validate factura.xml`; también puede adjuntarse al chat | Validar, revisar y analizar un XML; consultar o descargar XML de un CFDI existente. No es entrada directa de `nt cfdi stamp`. | Adjuntos de chat hasta 1 MB |
 | JSON | `nt cfdi prepare cfdi.json`; `nt drafts create cfdi.json`; `nt cfdi stamp cfdi.json` | Preparar un CFDI, crear/actualizar un borrador y, con autorización explícita, timbrar desde un JSON válido. | Adjuntos de chat hasta 1 MB |
 
 Los límites indicados son para adjuntos del chat; no los extrapoles a otras funciones del CLI. El OCR puede advertir lecturas inciertas: conserva las páginas de origen, comprueba importes y pregunta por los datos faltantes.
@@ -89,6 +86,35 @@ Una petición clara para iniciar el flujo sería: **«Créame una factura con es
 4. Solo después de la aprobación ejecuta `nt cfdi stamp references/ingreso-pue.json`. Informa el resultado y el UUID devuelto; si el modo o el resultado no son claros, detente y consulta antes de reintentar.
 
 Nunca presentes el ejemplo como una factura ya emitida. El JSON es únicamente una muestra para preparar y revisar.
+
+## Descargar y entregar el comprobante (PDF/XML)
+
+`download` saca del servicio el comprobante ya timbrado y lo deja en disco. Necesita el UUID:
+
+```sh
+nt cfdi download UUID --format pdf --output factura.pdf
+nt cfdi download UUID --format xml --output factura.xml
+```
+
+Responde `{"path": "...", "bytes": N}`. Antes de entregarlo comprueba que el archivo existe, que el PDF empieza con `%PDF` y que pesa más de ~10 KB: un PDF de 0 bytes o un HTML de error no es un comprobante.
+
+### Entrega por WhatsApp (gateway del servidor remoto)
+
+Cuando la petición llegó por WhatsApp, el comprobante se manda como **archivo adjunto**, no como texto, liga ni base64. El gateway convierte la etiqueta `MEDIA:<ruta absoluta>` en un documento nativo:
+
+```
+Aquí está tu factura, UUID EE5C1905-2143-47EC-A51C-91D95EE7B552.  MEDIA:/tmp/EE5C1905.pdf
+```
+
+- `[[as_document]] MEDIA:/tmp/factura.pdf` fuerza el envío como documento (cuando el archivo podría tratarse como imagen o comprimirse).
+- La ruta debe ser absoluta y existir en el mismo host donde corre el agente: en el servidor remoto `/tmp` o `~/.hermes/tmp`; en Windows `%LOCALAPPDATA%\Temp`. Nunca dentro del repositorio.
+- Para enviarlo a otro chat o a una persona distinta del interlocutor: `hermes send --to whatsapp:<numero> "Factura UUID … MEDIA:/tmp/factura.pdf"`.
+- Un `MEDIA:` por archivo. Si piden PDF y XML, van dos mensajes (o dos etiquetas); el XML se adjunta igual que el PDF.
+- Confirma UUID, RFC del receptor y total antes de enviar: es un comprobante fiscal emitido, no una vista previa.
+- No borres el archivo hasta que el envío termine; si piden reenviarlo, vuelve a descargarlo con `download` en lugar de confiar en una ruta vieja.
+- En modo *bot* del servidor remoto la herramienta `terminal` está restringida: si no puedes descargar el PDF, dilo; no inventes rutas ni adjuntos.
+
+En la CLI local (terminal) `MEDIA:` no se intercepta: ahí se entrega la ruta absoluta y el usuario abre el archivo.
 
 ## PRE-CFDI y folios
 
