@@ -51,6 +51,8 @@ nt cfdi validate factura.xml
 nt cfdi download UUID --format xml --output factura.xml
 nt cfdi download UUID --format pdf --output factura.pdf
 nt cfdi prepare cfdi.json
+nt drafts next-folio
+nt drafts reserve-folio
 nt drafts create cfdi.json
 nt drafts list --filter estado=sin-timbrar
 nt chat sessions create
@@ -119,21 +121,27 @@ En la CLI local (terminal) `MEDIA:` no se intercepta: ahí se entrega la ruta ab
 
 ## PRE-CFDI y folios
 
+Hay **dos folios distintos** y no se mezclan:
+
+| Comando | Endpoint | Qué devuelve | ¿Se usa para timbrar? |
+|---|---|---|---|
+| `nt drafts next-folio` | `GET /api/v2/pre-cfdis/folios/next` | El **siguiente folio fiscal real** de la empresa (consecutivo de la empresa + 1, formato de 9 dígitos, ej. `000009135`). **Solo consulta: no lo reserva ni lo incrementa.** | **Sí.** Es la fuente del folio al emitir. |
+| `nt drafts reserve-folio` | `POST /api/v2/pre-cfdis/folios/reserve` | Un folio **provisional** de captura `BOR-…` (ej. `BOR-000000012`); consume un contador aparte. | **No.** Nunca se timbra. |
+
 Al crear un PRE-CFDI, sigue el mismo criterio de captura que la aplicación:
 
 1. Inicia un CFDI 4.0 con los campos por completar, fecha local de Ciudad de México, tipo ingreso, MXN/PUE y conceptos vacíos.
-2. Para una creación nueva, sigue el patrón de reserva de folio provisional de la aplicación. Si el CLI no ofrece esa operación, indícalo y no inventes un folio ni una reserva.
-3. Al editar un borrador existente, conserva su ID y actualiza ese mismo borrador en lugar de crear otro para reemplazarlo.
+2. **Para el folio de una factura que se va a timbrar, pide el consecutivo con `nt drafts next-folio`** y úsalo tal cual en el campo `folio`. Como no reserva, puedes consultarlo las veces que hagan falta: devuelve el mismo valor hasta que la emisión se complete. Consultarlo y no emitir no quema folios.
+3. Si lo que quieres es un borrador de captura sin intención de emitir todavía, usa `nt drafts reserve-folio` (`BOR-…`).
+4. Al editar un borrador existente, conserva su ID y actualiza ese mismo borrador en lugar de crear otro para reemplazarlo.
 
-Si se trabaja sin la interfaz, conserva estas distinciones:
+Reglas de folio:
 
-- El `id` identifica el borrador; la reserva entrega un folio provisional `BOR-…` para capturas. No lo confundas con el folio fiscal.
+- El `id` identifica el borrador; `BOR-…` identifica provisionalmente una captura. Ninguno de los dos es el folio fiscal.
+- Un folio `BOR-…` **nunca** se timbra. Antes de `stamp`, el campo `folio` del JSON debe ser el consecutivo real (`next-folio`) o el que indique explícitamente el usuario.
 - `Serie` y `Folio` son campos independientes. No concatentes la serie para inventar la secuencia.
-- El folio del borrador puede conservarse al emitir y llegar al XML. No asumas que `BOR-…` será sustituido automáticamente por un consecutivo fiscal. Antes de timbrar, confirma con el usuario el folio que desea usar.
-- `BOR-…` identifica provisionalmente una captura; el folio fiscal pertenece al comprobante emitido.
-- El ejemplo `PUE…` es solo una muestra, no una reserva ni garantía de unicidad. No lo uses como sustituto de la reserva de folio.
-- Si el sistema rechaza el folio por longitud o formato, informa el problema; no lo trunques ni lo cambies silenciosamente.
-- Un folio provisional `BOR-…` nunca se timbra. Para emitir usa el folio real: el que indique el usuario o el consecutivo numérico del día; si no hay forma de saberlo, pregúntalo antes de timbrar en lugar de asumir `BOR-…`.
+- No inventes folios a mano (fechas, `PUE…`, incrementos propios) ni reutilices el de otra factura: el consecutivo lo da la empresa.
+- Si el usuario pide un folio específico y difiere de `next-folio`, confírmalo con él antes de timbrar; si el sistema rechaza el folio por longitud o formato, informa el problema y no lo trunques.
 
 El borrador se crea/actualiza con `nt drafts create` y `nt drafts update`; consulta `nt drafts --help` para ver el formato exacto. `nt cfdi prepare` valida/prepara sin guardar ni reservar folio.
 
