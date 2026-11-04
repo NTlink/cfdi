@@ -75,6 +75,7 @@ nt chat events RUN_ID
 - El chat puede consultar y preparar un borrador, pero no timbra, cancela, cobra ni envía correo.
 - **Revisión obligatoria antes de timbrar:** presenta al usuario la factura completa que se va a emitir, incluidos emisor, receptor, conceptos, cantidades, impuestos, totales, forma y método de pago, fecha, serie y folio. Muestra los datos finales después de validar/preparar, señala cualquier valor inferido o corregido y espera que el usuario apruebe esa versión exacta antes de ejecutar `stamp`. Una solicitud inicial como «créala y timbrala» no sustituye esta revisión previa.
 - Antes de crear/modificar datos, emitir, cancelar, enviar correo/WhatsApp, cobrar o realizar otro efecto externo, confirma con el usuario y comprueba `nt mode`. El nombre del perfil por sí solo no demuestra que el PAC sea sandbox.
+- **Confirmación única:** la revisión se presenta una vez por versión de la factura. Si el usuario ya vio el resumen y responde «timbra», «confirma», «sí» o equivalente, ejecuta `nt cfdi stamp` de inmediato; no pidas una segunda confirmación ni repitas el resumen. Solo vuelve a pedir revisión si algún dato cambió después de mostrarla.
 
 ### Ejemplo: factura de ingreso PUE
 
@@ -132,6 +133,7 @@ Si se trabaja sin la interfaz, conserva estas distinciones:
 - `BOR-…` identifica provisionalmente una captura; el folio fiscal pertenece al comprobante emitido.
 - El ejemplo `PUE…` es solo una muestra, no una reserva ni garantía de unicidad. No lo uses como sustituto de la reserva de folio.
 - Si el sistema rechaza el folio por longitud o formato, informa el problema; no lo trunques ni lo cambies silenciosamente.
+- Un folio provisional `BOR-…` nunca se timbra. Para emitir usa el folio real: el que indique el usuario o el consecutivo numérico del día; si no hay forma de saberlo, pregúntalo antes de timbrar en lugar de asumir `BOR-…`.
 
 El borrador se crea/actualiza con `nt drafts create` y `nt drafts update`; consulta `nt drafts --help` para ver el formato exacto. `nt cfdi prepare` valida/prepara sin guardar ni reservar folio.
 
