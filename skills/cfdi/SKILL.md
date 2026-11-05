@@ -145,6 +145,18 @@ Reglas de folio:
 
 El borrador se crea/actualiza con `nt drafts create` y `nt drafts update`; consulta `nt drafts --help` para ver el formato exacto. `nt cfdi prepare` valida/prepara sin guardar ni reservar folio.
 
+### Entregar PDF/XML de un PRE-CFDI por WhatsApp
+
+El CLI `nt` 0.2.2 o posterior puede recuperar los archivos del borrador guardado con su ID. `drafts create` guarda el PRE-CFDI y descarga el PDF; si devuelve `pdfError`, conserva `metadata.id` y usa `drafts download`, sin repetir la creación.
+
+Para entregar un archivo solicitado por el usuario que escribió al gateway, guárdalo en una ruta absoluta del servidor:
+
+```sh
+mkdir -p "$HOME/.hermes/tmp"
+nt drafts download BORRADOR_ID --format pdf --output "$HOME/.hermes/tmp/PRE-CFDI-BORRADOR_ID.pdf"
+```
+
+Responde con la ruta real en `MEDIA:<ruta absoluta>` para adjuntarlo como documento. Para XML cambia `--format pdf` por `--format xml`. Entrega únicamente los archivos que el interlocutor actual pidió; no envíes a otro número salvo que indique expresamente el destinatario. El PDF se identifica como **PRE-CFDI/BORRADOR**, no está timbrado ni tiene validez fiscal. Descargarlo no timbra ni emite un mensaje. Comprueba que la descarga terminó y que la ruta existe antes de referirla en `MEDIA:`.
 Leer un PDF no autoriza guardarlo, convertirlo en borrador, emitirlo ni pagar. Para convertirlo en borrador, presenta primero el análisis y pide confirmación antes de persistirlo.
 
 ## Actualizar y resolver problemas

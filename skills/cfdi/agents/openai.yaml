@@ -1,4 +1,4 @@
 interface:
   display_name: "Cfdi"
-  short_description: "Timbrado CFDI mexicano desde terminal o Hermes."
+  short_description: "Preparar, descargar archivos y timbrar CFDI desde CLI o Hermes."
   default_prompt: "Usa $cfdi para preparar y revisar una factura antes de timbrarla con nt."
