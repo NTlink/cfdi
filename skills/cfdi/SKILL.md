@@ -135,6 +135,12 @@ Al crear un PRE-CFDI, sigue el mismo criterio de captura que la aplicación:
 3. Si lo que quieres es un borrador de captura sin intención de emitir todavía, usa `nt drafts reserve-folio` (`BOR-…`).
 4. Al editar un borrador existente, conserva su ID y actualiza ese mismo borrador en lugar de crear otro para reemplazarlo.
 
+### Pasar un PRE-CFDI guardado al timbrado con el siguiente folio
+
+Cuando el usuario decida intentar timbrar un PRE-CFDI existente desde el CLI, antes de preparar la revisión final ejecuta `nt drafts next-folio` en el perfil y empresa activos. Toma el valor de `folio` devuelto y sustitúyelo en el JSON del mismo borrador en lugar de `BOR-...` o cualquier folio provisional, salvo que el usuario haya pedido expresamente otro folio; en ese caso confirma la diferencia antes de cambiarlo. `next-folio` consulta, pero no reserva el consecutivo.
+
+Guarda el cambio en el mismo borrador con `nt drafts update ID cfdi.json` y descarga el PDF actualizado con `nt drafts download ID --format pdf --output precfdi.pdf`. Presenta ese PDF y la factura completa con el nuevo folio para revisión. Solo tras la aprobación explícita de esa versión ejecuta `nt drafts stamp ID cfdi.json`. No uses el PDF anterior ni timbres con el folio provisional BOR. Si la secuencia cambia entre la consulta y el timbrado, no reintentes a ciegas: consulta `next-folio` otra vez, actualiza el mismo borrador, entrega el PDF corregido y vuelve a pedir aprobación para los datos cambiados.
+
 Reglas de folio:
 
 - El `id` identifica el borrador; `BOR-…` identifica provisionalmente una captura. Ninguno de los dos es el folio fiscal.
@@ -144,6 +150,9 @@ Reglas de folio:
 - Si el usuario pide un folio específico y difiere de `next-folio`, confírmalo con él antes de timbrar; si el sistema rechaza el folio por longitud o formato, informa el problema y no lo trunques.
 
 El borrador se crea/actualiza con `nt drafts create` y `nt drafts update`; consulta `nt drafts --help` para ver el formato exacto. `nt cfdi prepare` valida/prepara sin guardar ni reservar folio.
+
+Por defecto, entrega el PDF en la misma respuesta cada vez que crees o actualices correctamente un PRE-CFDI, aunque el usuario no lo solicite por separado; no preguntes si también lo quiere. Solo omítelo si el usuario pide expresamente no recibirlo. Si falla la descarga, conserva el ID y recupéralo; si sigue fallando, explica el problema y no afirmes que entregaste el archivo. El XML es adicional y no sustituye el PDF.
+
 
 ### Entregar PDF/XML de un PRE-CFDI por WhatsApp
 
