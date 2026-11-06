@@ -6,7 +6,7 @@ Base de pruebas: `http://pruebas.ntlink.com.mx:8092`. Producción todavía no ex
 
 Timbrado `/api/v2/cfdis/stamp` y `/api/v2/pre-cfdis/{id}/stamp`: fecha inválida
 o futura y folio distinto del siguiente de la emisora devuelven 400 con mensaje
-específico antes del PAC y del diario. Usa hora CDMX sin Z/offset y consulta
+específico antes del PAC y del diario. Usa la hora local de la sucursal (zona de su estado; `GET /api/v2/pre-cfdis/zona-expedicion?cp=CP`) sin Z/offset y consulta
 `GET /api/v2/pre-cfdis/folios/next?companyId=ID` con
 `drafts.py next-folio --company ID`. Omitir companyId usa la empresa de sesión.
 La consulta valida alcance y no reserva ni incrementa. Folios BOR, vacíos,

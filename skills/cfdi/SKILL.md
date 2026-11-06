@@ -119,13 +119,15 @@ lo consume, vuelve a consultar, actualiza el mismo borrador y revisa de nuevo.
 El portal rechaza con 400 folios vacíos, BOR, personalizados, atrasados o
 adelantados. No inventes incrementos, fechas como folio ni trunques el valor.
 
-**Fecha:** hora real de `America/Mexico_City`, `YYYY-MM-DDTHH:mm:ss`, sin Z ni
-offset. No uses `utcnow()`, `toISOString()` ni borres la Z de una hora UTC:
-quitar la zona no convierte la hora. En Python usa
-`datetime.now(ZoneInfo('America/Mexico_City')).strftime('%Y-%m-%dT%H:%M:%S')`
-con `from datetime import datetime; from zoneinfo import ZoneInfo`. Si faltan
-zonas horarias, resuélvelo antes de emitir; no adivines la hora. No reutilices
-fechas de ejemplos antiguos. El backend rechaza fechas inválidas o futuras
+**Fecha:** hora local de la sucursal emisora, `YYYY-MM-DDTHH:mm:ss`, sin Z ni
+offset. La zona es la de su estado, no siempre CDMX: `python scripts/drafts.py zone --cp CP`
+devuelve `timeZone` (p. ej. `America/Tijuana` para Baja California). Úsala con
+`datetime.now(ZoneInfo(timeZone)).strftime('%Y-%m-%dT%H:%M:%S')`, con
+`from datetime import datetime; from zoneinfo import ZoneInfo`. No uses `utcnow()`,
+`toISOString()` ni borres la Z de una hora UTC: quitar la zona no convierte la hora.
+Si el servidor no conoce la zona, usa `America/Mexico_City`. Si faltan zonas
+horarias, resuélvelo antes de emitir; no adivines la hora. No reutilices fechas
+de ejemplos antiguos. El backend rechaza fechas inválidas o futuras
 antes del PAC. Corrige el mismo borrador y vuelve a revisar; un 409 de
 conciliación no autoriza borrar candados ni reintentar a ciegas.
 

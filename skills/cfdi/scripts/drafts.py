@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRE-CFDI (borradores): list, get, create, update, download, next-folio, reserve-folio, stamp."""
+"""PRE-CFDI (borradores): list, get, create, update, download, next-folio, reserve-folio, zone, stamp."""
 import ntlink_api as api
 
 
@@ -22,6 +22,8 @@ def build(p):
     d.add_argument("--force", action="store_true")
     sub.add_parser("next-folio", help="Siguiente folio fiscal de la empresa; solo consulta, no reserva.").add_argument("--company", type=int, help="ID de la empresa emisora; omitir usa la empresa de sesión.")
     sub.add_parser("reserve-folio", help="Reservar un folio provisional BOR-… (nunca se timbra).")
+    z = sub.add_parser("zone", help="Zona horaria de la sucursal por código postal; úsala para la fecha de expedición.")
+    z.add_argument("--cp", required=True, help="Código postal de la sucursal (LugarExpedicion).")
     s = sub.add_parser("stamp", help="TIMBRAR un PRE-CFDI. Efecto fiscal real: requiere aprobación explícita.")
     s.add_argument("id")
     s.add_argument("file")
@@ -51,6 +53,8 @@ def handle(a):
         return api.request("GET", "%s/%s/%s" % (base, api.q(a.id), a.format), output=a.output or "PRE-CFDI-%s.%s" % (a.id, a.format), force=a.force)
     if a.cmd == "next-folio":
         return api.request("GET", base + "/folios/next", query=[("companyId", a.company)] if a.company else None)
+    if a.cmd == "zone":
+        return api.request("GET", base + "/zona-expedicion", query=[("cp", a.cp)])
     if a.cmd == "reserve-folio":
         return api.request("POST", base + "/folios/reserve")
     return api.request("POST", "%s/%s/stamp" % (base, api.q(a.id)), json_body=api.read_json(a.file))
