@@ -1,0 +1,79 @@
+{
+  "version": "4.0",
+  "serie": "RES",
+  "folio": "987",
+  "fecha": "2025-07-31T16:03:48",
+  "formaPago": "03",
+  "subtotal": "1896.33",
+  "moneda": "MXN",
+  "tipoCambio": "1",
+  "total": "2176.04",
+  "tipoDeComprobante": "I",
+  "exportacion": "01",
+  "metodoPago": "PUE",
+  "lugarExpedicion": "58000",
+  "emisor": {
+    "rfc": "URE180429TM6",
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601"
+  },
+  "receptor": {
+    "rfc": "NLC091211KC6",
+    "nombre": "NT LINK COMUNICACIONES",
+    "domicilioFiscalReceptor": "04100",
+    "regimenFiscalReceptor": "601",
+    "usoCfdi": "G03"
+  },
+  "conceptos": [
+    {
+      "claveProdServ": "80101508",
+      "noIdentificacion": "84111506",
+      "cantidad": "1",
+      "claveUnidad": "E48",
+      "unidad": "SERVICIO",
+      "descripcion": "SERVICIOS DE ASESORIAS CONTABLES",
+      "valorUnitario": "1896.33",
+      "importe": "1896.33",
+      "objetoImp": "02",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "1896.33",
+            "impuesto": "002",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.160000",
+            "importe": "303.4128"
+          }
+        ],
+        "retenciones": [
+          {
+            "base": "1896.33",
+            "impuesto": "001",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.012500",
+            "importe": "23.704125"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosRetenidos": "23.70",
+    "totalImpuestosTrasladados": "303.41",
+    "retenciones": [
+      {
+        "impuesto": "001",
+        "importe": "23.70"
+      }
+    ],
+    "traslados": [
+      {
+        "base": "1896.33",
+        "impuesto": "002",
+        "tipoFactor": "Tasa",
+        "tasaOCuota": "0.160000",
+        "importe": "303.41"
+      }
+    ]
+  }
+}

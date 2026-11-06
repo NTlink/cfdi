@@ -1,0 +1,24 @@
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd" Version="4.0" Serie="NC" Folio="5" Fecha="2025-07-07T10:18:34" Sello="jvZDNg8QXkAl4dsGKf5Kr84MxXdVYHGfOxRV5A7mSAsN8O6ncy7/qTbynbC3CTbei9p1v9L9R19AAUEqtUn4K2Q4asYl9bYs/JI1tUrQXT3i/ubmWhvawscFdE8QVH9xogZ79sdBXjAR5mRqk2ymgovcoZDO3rOHgnOq9T6Tyzsha+BX3hohQ3KpBE9Y4xerZssEziA0WyxiZrOqxzBu/arFadiOOVcK0p18nF0a1VkOcSA/qGm7abJUxqVkSlskpgIim6uvKmKheiPdASAh76jI6iFKecp00qygb4JBIClzcgoKfA5JZ2EHxGgiEqUSE7BhiakuucWYsHJgplACdA==" FormaPago="03" NoCertificado="30001000000500003359" Certificado="MIIFiTCCA3GgAwIBAgIUMzAwMDEwMDAwMDA1MDAwMDMzNTkwDQYJKoZIhvcNAQELBQAwggErMQ8wDQYDVQQDDAZBQyBVQVQxLjAsBgNVBAoMJVNFUlZJQ0lPIERFIEFETUlOSVNUUkFDSU9OIFRSSUJVVEFSSUExGjAYBgNVBAsMEVNBVC1JRVMgQXV0aG9yaXR5MSgwJgYJKoZIhvcNAQkBFhlvc2Nhci5tYXJ0aW5lekBzYXQuZ29iLm14MR0wGwYDVQQJDBQzcmEgY2VycmFkYSBkZSBjYWxpejEOMAwGA1UEEQwFMDYzNzAxCzAJBgNVBAYTAk1YMRkwFwYDVQQIDBBDSVVEQUQgREUgTUVYSUNPMREwDwYDVQQHDAhDT1lPQUNBTjERMA8GA1UELRMIMi41LjQuNDUxJTAjBgkqhkiG9w0BCQITFnJlc3BvbnNhYmxlOiBBQ0RNQS1TQVQwHhcNMjMwNTE1MTY1NDA0WhcNMjcwNTE1MTY1NDA0WjCBsDEgMB4GA1UEAxMXQ0VDSUxJQSBNSVJBTkRBIFNBTkNIRVoxIDAeBgNVBCkTF0NFQ0lMSUEgTUlSQU5EQSBTQU5DSEVaMSAwHgYDVQQKExdDRUNJTElBIE1JUkFOREEgU0FOQ0hFWjEWMBQGA1UELRMNTUlTQzQ5MTIxNEI4NjEbMBkGA1UEBRMSTUlTQzQ5MTIxNE1DQ1JOQzAxMRMwEQYDVQQLEwpTdWN1cnNhbCAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlJRZRgEmqXvNLPXrZ/5IUiN8SJpumnYA9Gh/LvSxPZUDeYl9B7mL7/SbjE139WUZYBKlcR/od/1jgAiHqIxInAm3ggBD4MwO+nYHFPXZytIGh2tFQ2l47DyZKkhdzkcLuwS3Pu25YrgdRy6o7DcIxEqXUbvpZzbFe8+U3XgC0AnsWBBRwbRitlpfkRSPFA+qqofYdXFhb7pnr7aWkykohsRUfsaEwToQcYNtNafJncrinElgsZsH8IaQ4MeqEXpPSqKgp+5uYULfVkOOHIPKFCsE60Jv2+sGOSi9adcQ+virN0Uw440bsohbHeb5VNmCXKAlB5snVo+dYuGzcaZY/QIDAQABox0wGzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIGwDANBgkqhkiG9w0BAQsFAAOCAgEAo5aMM/BQizSjtctSg14uLVZ8frWWxFCikYpio/PFmAZWpavXnT+NUipLFXYcUbFCHHt/RGC15QnaiJRurPRWOAQkLqqLy+guAeaA9EbKtViWAKnnUlCQnLJ/TbZoxzyLKHsW2jp/kTkAA5W9EuHJbTLyIobCa+yah0Xbb55o22mdSzl43qVgxYz13IBms1p5iFDzSvO4ccNMglvBZYICKRVM/XKhsB7NjvHowilKITWoZVirbHiztX+dxsRgE7g/ccDkFLP2mh6jI/3EuptWD5yR8SUmGcv8f0UC/ebWQ0DHNOonNKjL+spRVM8PqbABd3nboGm1oq5/8Je73ElpYjAb26XLUKwKGimY1gKyEeW0vcP62/hvrvHsu7/u8492wDbYurcpraVKl8E3hygTfSbYovAmUy9Kvlz6kiuywMJBpj+IwqFPNc89MLP5n4XhWgH4esb6pidulZTBpH3aE4KtSn+MTUzBYVctj72OgFjqkSe56Hb1E0Q2+pDu5XKnGP4yiaOJWiyoNcSp/9caQcKGkZqWMB69N519I3g4iDv0gf+WYy79ygj6z8Yg/1oJ3QklGmTSgaAYdXAAMeHjna9OTvwr2OE2dtaYVIT5bkEzTmzKVq6yDJuQZqYgw9obdNyH7PrBzvnnNC24/8IISaTgaHfJnX3LjQDJbYq72bg=" CondicionesDePago="Contado" SubTotal="113725.51" Moneda="MXN" Total="131220.59" TipoDeComprobante="I" Exportacion="01" MetodoPago="PUE" LugarExpedicion="57170">
+    <cfdi:Emisor Rfc="URE180429TM6" Nombre="UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV" RegimenFiscal="601"/>
+    <cfdi:Receptor Rfc="NLC091211KC6" Nombre="NT LINK COMUNICACIONES" DomicilioFiscalReceptor="04100" RegimenFiscalReceptor="601" UsoCFDI="G02"/>
+    <cfdi:Conceptos>
+        <cfdi:Concepto ClaveProdServ="85122000" NoIdentificacion="Serv-Cto" Cantidad="1.000000" ClaveUnidad="ACT" Unidad="Activ." Descripcion="SERVICIO DENTAL" ValorUnitario="113725.510000" Importe="113725.51" ObjetoImp="02">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="113725.51" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="18196.08"/>
+                </cfdi:Traslados>
+                <cfdi:Retenciones>
+                    <cfdi:Retencion Base="56080.25" Impuesto="001" TipoFactor="Tasa" TasaOCuota="0.012500" Importe="701.00"/>
+                </cfdi:Retenciones>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+    </cfdi:Conceptos>
+    <cfdi:Impuestos TotalImpuestosTrasladados="18196.08" TotalImpuestosRetenidos="701.00">
+        <cfdi:Retenciones>
+            <cfdi:Retencion Impuesto="001" Importe="701.00"/>
+        </cfdi:Retenciones>
+        <cfdi:Traslados>
+            <cfdi:Traslado Base="113725.51" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="18196.08"/>
+        </cfdi:Traslados>
+    </cfdi:Impuestos>
+</cfdi:Comprobante>

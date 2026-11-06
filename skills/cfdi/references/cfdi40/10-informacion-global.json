@@ -1,0 +1,66 @@
+{
+  "exportacion": "01",
+  "fecha": "2025-07-07T10:12:39",
+  "formaPago": "01",
+  "lugarExpedicion": "66039",
+  "metodoPago": "PUE",
+  "moneda": "MXN",
+  "serie": "G",
+  "subtotal": "10602.00",
+  "tipoCambio": "1",
+  "tipoDeComprobante": "I",
+  "total": "12298.32",
+  "version": "4.0",
+  "informacionGlobal": {
+    "anio": "2022",
+    "meses": "11",
+    "periodicidad": "01"
+  },
+  "emisor": {
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601",
+    "rfc": "URE180429TM6"
+  },
+  "receptor": {
+    "domicilioFiscalReceptor": "66039",
+    "nombre": "PUBLICO EN GENERAL",
+    "regimenFiscalReceptor": "616",
+    "rfc": "XAXX010101000",
+    "usoCfdi": "S01"
+  },
+  "conceptos": [
+    {
+      "cantidad": "18.00",
+      "claveProdServ": "01010101",
+      "claveUnidad": "ACT",
+      "descripcion": "Venta",
+      "importe": "10602.00",
+      "noIdentificacion": "00001",
+      "objetoImp": "02",
+      "valorUnitario": "589.00",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "10602.00",
+            "importe": "1696.32",
+            "impuesto": "002",
+            "tasaOCuota": "0.160000",
+            "tipoFactor": "Tasa"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosTrasladados": "1696.32",
+    "traslados": [
+      {
+        "base": "10602.00",
+        "importe": "1696.32",
+        "impuesto": "002",
+        "tasaOCuota": "0.160000",
+        "tipoFactor": "Tasa"
+      }
+    ]
+  }
+}

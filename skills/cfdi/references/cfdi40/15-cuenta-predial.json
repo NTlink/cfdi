@@ -1,0 +1,65 @@
+{
+  "version": "4.0",
+  "serie": "SW",
+  "folio": "123456",
+  "fecha": "2025-07-08T12:31:07",
+  "formaPago": "01",
+  "condicionesDePago": "CondicionesDePago",
+  "subtotal": "200.00",
+  "descuento": "0.00",
+  "moneda": "MXN",
+  "total": "180.00",
+  "tipoDeComprobante": "I",
+  "exportacion": "01",
+  "metodoPago": "PUE",
+  "lugarExpedicion": "45610",
+  "emisor": {
+    "rfc": "URE180429TM6",
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601"
+  },
+  "receptor": {
+    "rfc": "RASE8810158B9",
+    "nombre": "EDGAR JOSEDUARDO RAMOS SILVEYRA",
+    "domicilioFiscalReceptor": "53640",
+    "regimenFiscalReceptor": "605",
+    "usoCfdi": "CP01"
+  },
+  "conceptos": [
+    {
+      "claveProdServ": "50211503",
+      "noIdentificacion": "None",
+      "cantidad": "1.0",
+      "claveUnidad": "H87",
+      "unidad": "Pieza",
+      "descripcion": "Cigarros",
+      "valorUnitario": "200.00",
+      "importe": "200.00",
+      "descuento": "0.00",
+      "objetoImp": "02",
+      "impuestos": {
+        "retenciones": [
+          {
+            "base": "200.00",
+            "impuesto": "001",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.100000",
+            "importe": "20.00"
+          }
+        ]
+      },
+      "cuentaPredial": {
+        "numero": "aB3cD4eF5gH6iJ7kL8mN9oP0"
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosRetenidos": "20.00",
+    "retenciones": [
+      {
+        "impuesto": "001",
+        "importe": "20.00"
+      }
+    ]
+  }
+}

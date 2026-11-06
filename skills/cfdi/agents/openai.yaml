@@ -1,4 +1,4 @@
 interface:
   display_name: "Cfdi"
-  short_description: "Preparar, descargar archivos y timbrar CFDI desde CLI o Hermes."
-  default_prompt: "Usa $cfdi para preparar y revisar una factura antes de timbrarla con nt."
+  short_description: "Facturas CFDI con NTLink: clientes, catálogos, PDF/XML y timbrado, con scripts Python."
+  default_prompt: "Usa $cfdi para preparar y revisar una factura antes de timbrarla."

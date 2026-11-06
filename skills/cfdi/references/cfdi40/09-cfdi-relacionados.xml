@@ -1,0 +1,24 @@
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Certificado="MIIFsDCCA5igAwIBAgIUMzAwMDEwMDAwMDA1MDAwMDM0MTYwDQYJKoZIhvcNAQELBQAwggErMQ8wDQYDVQQDDAZBQyBVQVQxLjAsBgNVBAoMJVNFUlZJQ0lPIERFIEFETUlOSVNUUkFDSU9OIFRSSUJVVEFSSUExGjAYBgNVBAsMEVNBVC1JRVMgQXV0aG9yaXR5MSgwJgYJKoZIhvcNAQkBFhlvc2Nhci5tYXJ0aW5lekBzYXQuZ29iLm14MR0wGwYDVQQJDBQzcmEgY2VycmFkYSBkZSBjYWxpejEOMAwGA1UEEQwFMDYzNzAxCzAJBgNVBAYTAk1YMRkwFwYDVQQIDBBDSVVEQUQgREUgTUVYSUNPMREwDwYDVQQHDAhDT1lPQUNBTjERMA8GA1UELRMIMi41LjQuNDUxJTAjBgkqhkiG9w0BCQITFnJlc3BvbnNhYmxlOiBBQ0RNQS1TQVQwHhcNMjMwNTE4MTE0MzUxWhcNMjcwNTE4MTE0MzUxWjCB1zEnMCUGA1UEAxMeRVNDVUVMQSBLRU1QRVIgVVJHQVRFIFNBIERFIENWMScwJQYDVQQpEx5FU0NVRUxBIEtFTVBFUiBVUkdBVEUgU0EgREUgQ1YxJzAlBgNVBAoTHkVTQ1VFTEEgS0VNUEVSIFVSR0FURSBTQSBERSBDVjElMCMGA1UELRMcRUtVOTAwMzE3M0M5IC8gVkFEQTgwMDkyN0RKMzEeMBwGA1UEBRMVIC8gVkFEQTgwMDkyN0hTUlNSTDA1MRMwEQYDVQQLEwpTdWN1cnNhbCAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtmecO6n2GS0zL025gbHGQVxznPDICoXzR2uUngz4DqxVUC/w9cE6FxSiXm2ap8Gcjg7wmcZfm85EBaxCx/0J2u5CqnhzIoGCdhBPuhWQnIh5TLgj/X6uNquwZkKChbNe9aeFirU/JbyN7Egia9oKH9KZUsodiM/pWAH00PCtoKJ9OBcSHMq8Rqa3KKoBcfkg1ZrgueffwRLws9yOcRWLb02sDOPzGIm/jEFicVYt2Hw1qdRE5xmTZ7AGG0UHs+unkGjpCVeJ+BEBn0JPLWVvDKHZAQMj6s5Bku35+d/MyATkpOPsGT/VTnsouxekDfikJD1f7A1ZpJbqDpkJnss3vQIDAQABox0wGzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIGwDANBgkqhkiG9w0BAQsFAAOCAgEAFaUgj5PqgvJigNMgtrdXZnbPfVBbukAbW4OGnUhNrA7SRAAfv2BSGk16PI0nBOr7qF2mItmBnjgEwk+DTv8Zr7w5qp7vleC6dIsZFNJoa6ZndrE/f7KO1CYruLXr5gwEkIyGfJ9NwyIagvHHMszzyHiSZIA850fWtbqtythpAliJ2jF35M5pNS+YTkRB+T6L/c6m00ymN3q9lT1rB03YywxrLreRSFZOSrbwWfg34EJbHfbFXpCSVYdJRfiVdvHnewN0r5fUlPtR9stQHyuqewzdkyb5jTTw02D2cUfL57vlPStBj7SEi3uOWvLrsiDnnCIxRMYJ2UA2ktDKHk+zWnsDmaeleSzonv2CHW42yXYPCvWi88oE1DJNYLNkIjua7MxAnkNZbScNw01A6zbLsZ3y8G6eEYnxSTRfwjd8EP4kdiHNJftm7Z4iRU7HOVh79/lRWB+gd171s3d/mI9kte3MRy6V8MMEMCAnMboGpaooYwgAmwclI2XZCczNWXfhaWe0ZS5PmytD/GDpXzkX0oEgY9K/uYo5V77NdZbGAjmyi8cE2B2ogvyaN2XfIInrZPgEffJ4AB7kFA2mwesdLOCh0BLD9itmCve3A1FGR4+stO2ANUoiI3w3Tv2yQSg4bjeDlJ08lXaaFCLW2peEXMXjQUk7fmpb5MNuOUTW6BE=" Exportacion="01" Fecha="2025-07-07T10:10:12" FormaPago="01" LugarExpedicion="60570" MetodoPago="PUE" Moneda="MXN" NoCertificado="30001000000500003416" Sello="BQj/hJtM+j9KCZH4elEzoIrgsGsdn7UH4wb36eJAFXsdLxKRz9Bkqo6zjQdjdva34WV2wN5KLZyXwzrMIWwtFvzjxvCoA02oTLDITJulN+KUDsen8w6Xn4/nDGcT5eo/ECExVbsBYO32XVfanILNz4rTmT0TlqEK14zPfqHeXJQk5HDaeHm+1XltDCSXbTotc3RHzdwp92l3Jw5tM3n7VqT/G8MGPaUbNPdR+j/I7+6HJTnDCKvLrdvuakkbSqLQYABzH4UXKPziX1PZIV5GxFGZriICABPkJuSyMegH79RrdCYL5Ap7IlhahfuFJZr5589prQjTNK+n946/avtfag==" Serie="G" SubTotal="6670.00" TipoCambio="1" TipoDeComprobante="I" Total="7737.20" Version="4.0" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd">
+    <cfdi:CfdiRelacionados TipoRelacion="04">
+        <cfdi:CfdiRelacionado UUID="7528D559-7B38-54C2-8E2C-12162B9D39D5"/>
+    </cfdi:CfdiRelacionados>
+    <cfdi:CfdiRelacionados TipoRelacion="01">
+        <cfdi:CfdiRelacionado UUID="19810A61-2843-5F9E-A88D-86241BAC3F47"/>
+    </cfdi:CfdiRelacionados>
+    <cfdi:Emisor Rfc="URE180429TM6" Nombre="UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV" RegimenFiscal="601"/>
+    <cfdi:Receptor DomicilioFiscalReceptor="39660" Nombre="GRUPO ALOHA" RegimenFiscalReceptor="603" Rfc="GAL791116HB0" UsoCFDI="G01"/>
+    <cfdi:Conceptos>
+        <cfdi:Concepto Cantidad="58.00" ClaveProdServ="10226401" ClaveUnidad="H87" Descripcion="Tuberosa viva doble" Importe="6670.00" ObjetoImp="02" ValorUnitario="115.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="6670.00" Importe="1067.20" Impuesto="002" TasaOCuota="0.160000" TipoFactor="Tasa"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+    </cfdi:Conceptos>
+    <cfdi:Impuestos TotalImpuestosTrasladados="1067.20">
+        <cfdi:Traslados>
+            <cfdi:Traslado Base="6670.00" Importe="1067.20" Impuesto="002" TasaOCuota="0.160000" TipoFactor="Tasa"/>
+        </cfdi:Traslados>
+    </cfdi:Impuestos>
+</cfdi:Comprobante>

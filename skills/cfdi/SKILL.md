@@ -1,176 +1,185 @@
 ---
 name: cfdi
-description: Si buscas interactuar con el timbrado mexicano de CFDI desde una terminal o un agente como Hermes, esta skill te guía con el CLI nt para revisar documentos, preparar facturas y timbrar con aprobación explícita.
+description: Facturación electrónica mexicana (CFDI 4.0) con el backend de NTLink desde cualquier agente (Codex, Claude Code, OpenCode, Cursor, Hermes). Incluye scripts de Python sin dependencias para listar empresas, clientes, catálogos SAT y facturas; crear clientes; preparar PRE-CFDI; descargar PDF/XML, y timbrar o cancelar con aprobación explícita. Úsala cuando el usuario quiera crear, revisar, buscar, descargar, timbrar o cancelar una factura, o consultar datos fiscales de su cuenta NTLink.
 ---
 
-# Cfdi — NTLink CLI para timbrado mexicano
+# Cfdi — facturación CFDI con NTLink
 
-Si buscas una manera de interactuar con el timbrado mexicano desde una terminal o un agente como Hermes, esta skill te guía para hacerlo con el CLI `nt`, en Windows o Linux.
+Scripts de Python que llaman directamente a la API de NTLink. Solo necesitan Python 3.8 o posterior: sin `pip install`, sin Node y sin CLI adicional.
 
-## Instalar
+Los scripts están en la carpeta `scripts/` **de esta skill**. Ejecútalos con su ruta completa, por ejemplo `python <carpeta-de-la-skill>/scripts/cfdi.py list`. Si `python` no existe, usa `py` en Windows o `python3` en Linux y macOS. Todos devuelven JSON por stdout; los errores salen por stderr como `{"error": "...", "status": N}` y terminan con código 1.
 
-Requiere Node.js 22.12 o posterior y npm. Instala o actualiza el paquete global así:
+## Primer uso
 
-```powershell
-npm install --global @ntlinkmx/nt
-nt --version
-nt --help
-```
+1. Comprueba el entorno con `python scripts/auth.py mode`. Las instalaciones nuevas están en modo `pruebas`.
+2. En pruebas no hace falta iniciar sesión: el primer comando protegido entra solo con la cuenta pública de demostración (`URE180429TM6@ntlink.com.mx` / `NTPruebas.2021*?`). Esa cuenta es de administrador y sus datos son compartidos: úsala solo para pruebas. El entorno de pruebas usa HTTP sin TLS; nunca envíes ahí contraseñas reales.
+3. Para entrar con otra cuenta usa `python scripts/auth.py login --email CORREO`. La contraseña se pide oculta, o se lee de `NTLINK_PASSWORD` o de stdin con `--password-stdin`. No la escribas en la línea de comandos.
+4. Producción todavía no existe: `auth.py mode production` solo responde «próximamente». No inventes una URL de producción.
 
-El nombre npm es `@ntlinkmx/nt`; el comando instalado es `nt`.
+El token se guarda en `~/.ntlink-invoice/config.json` (Windows: `%USERPROFILE%\.ntlink-invoice\config.json`), el mismo archivo que usa el CLI `nt`. No muestres el token. Variables opcionales: `NTLINK_TOKEN`, `NTLINK_BASE_URL`, `NTLINK_PROFILE`, `NTLINK_TIMEOUT` (segundos).
 
-## Entornos e inicio de sesión
+## Reglas de seguridad
 
-- Las instalaciones nuevas comienzan en modo `pruebas`. `nt mode` informa el modo sin mostrar la dirección del servidor; `nt mode pruebas` vuelve al entorno de pruebas.
-- Producción todavía no existe. `nt mode production` solo muestra “próximamente” y deja activo el modo actual. No inventes una URL de producción ni afirmes que ese entorno está disponible.
-- El perfil nuevo apunta al servidor remoto de `pruebas`; la primera operación protegida inicia sesión automáticamente con la cuenta pública de demostración. Correo: `URE180429TM6@ntlink.com.mx`; contraseña: `NTPruebas.2021*?`. Usa esta cuenta únicamente para pruebas compartidas.
-- Ese entorno de pruebas usa HTTP. El CLI permite automáticamente HTTP solo para su origen de pruebas configurado. Otros orígenes HTTP requieren `nt config set --allow-insecure-http` y generan una advertencia en cada solicitud. Producción todavía no está disponible.
-- El token se guarda en `~/.ntlink-invoice/config.json` (Windows: `%USERPROFILE%\.ntlink-invoice\config.json`). No muestres ni compartas el token.
+- **Lecturas** (listar, consultar, descargar, `prepare`, `validate`): ejecútalas sin pedir permiso.
+- **Escrituras** (crear o modificar clientes y PRE-CFDI): confirma con el usuario qué vas a guardar.
+- **Efectos fiscales o externos** (`stamp`, `cancel`, `email`): solo después de revisión y aprobación explícita (ver «Timbrar»). Comprueba antes `auth.py mode`; el nombre del perfil no demuestra que el PAC sea sandbox.
+- Si una escritura falla con 401 o se corta, no la repitas a ciegas: consulta primero si ya tuvo efecto (`drafts.py list`, `cfdi.py list`).
+- Leer un PDF o XML no autoriza guardarlo, convertirlo en borrador ni emitirlo. Analízalo tú mismo, presenta el resultado y pregunta antes de persistir. Si una lectura es dudosa (OCR, importes que no cuadran), dilo y pregunta los datos faltantes.
 
-## Qué formatos acepta
-
-| Archivo | Uso en el CLI | Qué permite | Límite del chat |
-|---|---|---|---|
-| PDF | `nt chat attach archivo.pdf` o `nt chat send ID "Analiza esta factura" --attach archivo.pdf` | Extraer texto/OCR y analizar el documento en el chat. No se timbra directamente desde PDF. | 5 MB y 30 páginas |
-| XML | `nt cfdi validate factura.xml`; también puede adjuntarse al chat | Validar, revisar y analizar un XML; consultar o descargar XML de un CFDI existente. No es entrada directa de `nt cfdi stamp`. | Adjuntos de chat hasta 1 MB |
-| JSON | `nt cfdi prepare cfdi.json`; `nt drafts create cfdi.json`; `nt cfdi stamp cfdi.json` | Preparar un CFDI, crear/actualizar un borrador y, con autorización explícita, timbrar desde un JSON válido. | Adjuntos de chat hasta 1 MB |
-
-Los límites indicados son para adjuntos del chat; no los extrapoles a otras funciones del CLI. El OCR puede advertir lecturas inciertas: conserva las páginas de origen, comprueba importes y pregunta por los datos faltantes.
-
-## Comandos frecuentes
+## Cuenta y empresas
 
 ```sh
-nt mode
-nt health ready
-nt client info
-nt client balance
-nt cfdi list --from 2026-10-01 --to 2026-10-31 --page 0 --size 20
-nt cfdi get UUID
-nt cfdi status UUID
-nt cfdi validate factura.xml
-nt cfdi download UUID --format xml --output factura.xml
-nt cfdi download UUID --format pdf --output factura.pdf
-nt cfdi prepare cfdi.json
-nt drafts next-folio
-nt drafts reserve-folio
-nt drafts create cfdi.json
-nt drafts list --filter estado=sin-timbrar
-nt chat sessions create
-nt chat sessions list
+python scripts/directory.py account        # datos del sistema y timbres
+python scripts/directory.py balance        # saldo de timbres
+python scripts/directory.py companies      # empresas emisoras (companyId, rfc, legalName)
+python scripts/directory.py company 7975   # detalle de una empresa
 ```
 
-Para analizar un documento en el chat:
+Usa `companies` para elegir el emisor: el `rfc` va en `emisor.rfc` del comprobante y el `companyId` sirve para filtrar listas o asignar clientes.
+
+## Clientes
 
 ```sh
-nt chat sessions create
-nt chat send SESSION_ID "Analiza los campos e importes y señala dudas; no guardes ni emitas" --attach factura.pdf
-nt chat events RUN_ID
+python scripts/directory.py customers                    # todos los clientes (customerId, companyId, rfc, legalName)
+python scripts/directory.py customer 6942                # detalle
+python scripts/directory.py blacklist RFC                # ¿está en la lista 69/69-B del SAT?
+python scripts/directory.py create-customer cliente.json
+python scripts/directory.py update-customer 6942 cliente.json
+python scripts/directory.py delete-customer 6942         # 409 si tiene comprobantes
 ```
 
-`chat send` devuelve un `runId`; usa ese ID en `chat events`. Se aceptan hasta tres adjuntos. `nt chat attach archivo.pdf` extrae contenido sin enviarlo a un chat. Consulta `nt <grupo> --help` para ver opciones.
+Para crear un cliente:
 
-## Preparar y timbrar
+1. Busca primero en `customers` si el RFC ya existe en esa empresa; si existe, ofrece actualizarlo en lugar de duplicarlo.
+2. Pide los datos fiscales que exige CFDI 4.0: RFC, razón social exacta de la constancia, régimen fiscal (`catalogs.py get RegimenFiscal`) y código postal del domicilio fiscal. Correo y domicilio son opcionales.
+3. Escribe el JSON con la forma de [`references/cliente.json`](references/cliente.json). `companyId` indica a qué empresa pertenece el cliente; si falta, se usa la de la sesión.
+4. Muestra los datos, confirma y ejecuta `create-customer`. La respuesta trae el `customerId` guardado. Si el RFC ya existe en la empresa o el código postal no está en el catálogo del SAT, el backend responde 400 con el motivo: corrígelo con el usuario, no lo fuerces.
 
-- `nt cfdi prepare cfdi.json` prepara y valida sin guardar ni emitir.
-- `nt drafts create cfdi.json` y `nt drafts update ID cfdi.json` sí guardan cambios.
-- `nt cfdi stamp cfdi.json` y `nt drafts stamp ID cfdi.json` pueden timbrar realmente si el entorno y los permisos lo permiten. Aceptan JSON; no timbran directamente un PDF o XML.
-- El chat puede consultar y preparar un borrador, pero no timbra, cancela, cobra ni envía correo.
-- **Revisión obligatoria antes de timbrar:** presenta al usuario la factura completa que se va a emitir, incluidos emisor, receptor, conceptos, cantidades, impuestos, totales, forma y método de pago, fecha, serie y folio. Muestra los datos finales después de validar/preparar, señala cualquier valor inferido o corregido y espera que el usuario apruebe esa versión exacta antes de ejecutar `stamp`. Una solicitud inicial como «créala y timbrala» no sustituye esta revisión previa.
-- Antes de crear/modificar datos, emitir, cancelar, enviar correo/WhatsApp, cobrar o realizar otro efecto externo, confirma con el usuario y comprueba `nt mode`. El nombre del perfil por sí solo no demuestra que el PAC sea sandbox.
-- **Confirmación única:** la revisión se presenta una vez por versión de la factura. Si el usuario ya vio el resumen y responde «timbra», «confirma», «sí» o equivalente, ejecuta `nt cfdi stamp` de inmediato; no pidas una segunda confirmación ni repitas el resumen. Solo vuelve a pedir revisión si algún dato cambió después de mostrarla.
+Cliente extranjero: RFC `XEXX010101000`, `foreignTaxId` (NumRegIdTrib) y `country` distinto de México. Público en general: `XAXX010101000`. Los campos completos y las reglas de validación están en [`references/api.md`](references/api.md#cuenta-empresas-y-clientes).
+
+## Catálogos SAT
+
+```sh
+python scripts/catalogs.py list                           # nombres disponibles
+python scripts/catalogs.py get UsoCFDI                    # primeras 100 filas
+python scripts/catalogs.py get ClaveProdServ --q tornillo # busca en clave y descripción
+python scripts/catalogs.py get FormaPago --id 03          # clave exacta
+```
+
+Catálogos: `ClaveProdServ`, `ClaveUnidad`, `RegimenFiscal`, `UsoCFDI`, `FormaPago`, `MetodoPago`, `TipoDeComprobante`, `Exportacion`, `Moneda`, `ObjetoImp`, `Impuesto`, `TipoFactor`, `Periodicidad`, `Meses`, `TipoRelacion`. Devuelven `[{"id", "descripcion"}]`. Confirma cada clave en el catálogo antes de usarla; no la deduzcas de memoria.
+
+## Facturas timbradas
+
+```sh
+python scripts/cfdi.py list --from 2026-10-01 --to 2026-10-31 --page 0 --size 20
+python scripts/cfdi.py list --company 7975 --filter rfcReceptor=GOFB8210255F4
+python scripts/cfdi.py get UUID
+python scripts/cfdi.py status UUID
+python scripts/cfdi.py validate factura.xml
+```
+
+`list` devuelve `{"content": [...]}` con `uuid`, `fechaFactura`, `rfcEmisor`, `rfcReceptor`, `status`, `tipoComprobante`, `total` y `moneda`. Filtros: `--page`, `--size` (máx. 200), `--company`, `--customer`, `--from`, `--to` y, con `--filter KEY=VALUE`, `rfcEmisor`, `rfcReceptor`, `uuid`, `tipoComprobante` (`I`, `E`, `T`, `P`, `N`) y `status`. Para buscar por RFC usa `--filter rfcReceptor=RFC`; `--search` no busca en el RFC.
+
+`status` (consulta de estatus ante el SAT) responde 503 mientras el backend no la habilite; dilo así y no lo interpretes como un CFDI cancelado. `validate` revisa estructura, certificado y sello: los XML de `references/cfdi40/` son muestras y su sello no es válido.
+
+## Descargar PDF y XML
+
+```sh
+python scripts/cfdi.py download UUID --format pdf --output factura.pdf
+python scripts/cfdi.py download UUID --format xml --output factura.xml
+python scripts/drafts.py download BORRADOR_ID --format pdf --output precfdi.pdf
+python scripts/drafts.py download BORRADOR_ID --format xml --output precfdi.xml
+```
+
+Responden `{"path": "<ruta absoluta>", "bytes": N}`. No sobrescriben un archivo existente salvo con `--force`. Antes de entregarlo comprueba que el PDF empieza con `%PDF` y que no pesa casi nada: un archivo vacío o un HTML de error no es un comprobante. Entrega la ruta real; no inventes rutas ni digas que adjuntaste algo que no descargaste.
+
+## PRE-CFDI (borradores)
+
+```sh
+python scripts/drafts.py list --filter estado=sin-timbrar
+python scripts/drafts.py get BORRADOR_ID
+python scripts/drafts.py create cfdi.json                 # guarda y descarga PRE-CFDI-ID.pdf
+python scripts/drafts.py create cfdi.json --pdf-output precfdi.pdf
+python scripts/drafts.py update BORRADOR_ID cfdi.json
+python scripts/drafts.py next-folio
+python scripts/drafts.py reserve-folio
+```
+
+- `create` guarda el borrador y descarga su PDF de revisión. La salida conserva `metadata.id` y añade `pdf.path`. Si aparece `pdfError`, el borrador **ya quedó guardado**: recupera el PDF con `drafts.py download` y no repitas la creación.
+- Entrega el PDF cada vez que crees o actualices un PRE-CFDI, aunque no lo pidan, salvo que el usuario diga que no lo quiere. El XML es adicional y no lo sustituye.
+- El PDF dice PRE-CFDI / BORRADOR: no está timbrado ni tiene validez fiscal. El XML es de revisión, sin sello ni timbre.
+- `get`, `create` y `update` responden `{"metadata", "cfdi", "companyId"}`. Para editar, guarda el objeto `cfdi` en un archivo, cámbialo y envíalo con `update`; `metadata` (ID, folio, totales) no se envía.
+- Al editar, conserva el ID y actualiza el mismo borrador; no crees otro para reemplazarlo. La API no tiene ruta para borrar borradores.
+
+### Folios
+
+| Script | Devuelve | ¿Se timbra? |
+|---|---|---|
+| `drafts.py next-folio` | El siguiente folio fiscal real de la empresa (ej. `000009135`). Solo consulta: no reserva ni incrementa. | **Sí**, es el folio para emitir. |
+| `drafts.py reserve-folio` | Un folio provisional `BOR-…` de captura, con su propio contador. | **Nunca.** |
+
+- Antes de timbrar un borrador, consulta `next-folio`, ponlo en `folio` en lugar de `BOR-…`, guarda con `drafts.py update`, descarga el PDF actualizado y preséntalo para revisión.
+- `serie` y `folio` son campos independientes. No inventes folios (fechas, incrementos propios) ni reutilices el de otra factura.
+- Si el usuario pide un folio distinto de `next-folio`, confírmalo. Si el sistema rechaza el folio, informa el error; no lo trunques.
+
+## Preparar un comprobante
+
+1. Elige el ejemplo más cercano en [`references/cfdi40/`](references/cfdi40/README.md) (20 casos: ingreso, egreso, traslado, IVA 0/8/16%, exento, retenciones, RESICO, factura global, extranjero, a cuenta de terceros, objetoImp 01–08) o [`references/ingreso-pue.json`](references/ingreso-pue.json).
+2. Ajusta emisor (de `companies`), receptor (de `customers`), conceptos y claves verificadas en los catálogos. Si el usuario no da fecha, usa la hora local de Ciudad de México con el formato `YYYY-MM-DDTHH:mm:ss`, sin `Z` ni zona.
+3. Ejecuta `python scripts/cfdi.py prepare cfdi.json`: valida y recalcula importes sin guardar. Usa los totales que devuelve.
+4. Para guardarlo como borrador usa `drafts.py create`.
+
+La forma completa del JSON está en [`references/api.md`](references/api.md#forma-del-json-del-comprobante).
+
+## Timbrar
+
+`cfdi.py stamp cfdi.json` y `drafts.py stamp ID cfdi.json` emiten un CFDI real si el entorno y los permisos lo permiten.
+
+- **Revisión obligatoria:** antes de timbrar presenta la factura completa: emisor, receptor, conceptos, cantidades, impuestos, totales, forma y método de pago, fecha, serie y folio, tal como quedó después de `prepare`. Señala cualquier valor inferido o corregido y espera que el usuario apruebe esa versión exacta. Un pedido inicial como «créala y timbrala» no sustituye la revisión.
+- **Una sola confirmación por versión:** si el usuario ya vio el resumen y responde «timbra», «sí» o algo equivalente, timbra de inmediato, sin repetir el resumen. Vuelve a pedir revisión solo si cambió algún dato.
+- La respuesta es `{"uuid", "folio", "idVenta", "pdfGenerado", "xmlRespaldadoS3", "draftUpdated"}`. Informa el UUID y entrega el PDF (`cfdi.py download`). Después de timbrar, consulta otra vez `next-folio` para la siguiente factura; no sumes uno por tu cuenta.
+- Al timbrar un PRE-CFDI, el borrador queda ligado al UUID (`metadata.uuid`) y deja de aparecer con `estado=sin-timbrar`.
+- Informa el resultado tal como llegó. Si el resultado no es claro, consulta `cfdi.py list` antes de reintentar.
 
 ### Ejemplo: factura de ingreso PUE
 
-Una petición clara para iniciar el flujo sería: **«Créame una factura con estos datos y timbrala»**. Usa [el JSON de ejemplo de ingreso PUE](references/ingreso-pue.json) como datos de entrada y sigue este orden:
+Petición: «Créame una factura con estos datos y timbrala», con [`references/ingreso-pue.json`](references/ingreso-pue.json).
 
-1. Revisa el modo activo con `nt mode` y prepara/valida el JSON con `nt cfdi prepare references/ingreso-pue.json`.
-2. Presenta al usuario una vista legible de todos los datos finales de la factura. Comprueba las operaciones: subtotal $250,456.00 MXN, IVA 16% $40,072.96 MXN y total $290,528.96 MXN. Verifica con el usuario el folio y cualquier dato que haya cambiado durante la preparación.
-3. Espera aprobación explícita de esa factura revisada. Si el usuario pide cambios, aplícalos y vuelve a mostrar la factura completa para otra revisión.
-4. Solo después de la aprobación ejecuta `nt cfdi stamp references/ingreso-pue.json`. Informa el resultado y el UUID devuelto; si el modo o el resultado no son claros, detente y consulta antes de reintentar.
+1. `python scripts/auth.py mode` y `python scripts/cfdi.py prepare references/ingreso-pue.json`.
+2. Presenta la factura: subtotal $250,456.00 MXN, IVA 16% $40,072.96 MXN, total $290,528.96 MXN. Para el folio, `drafts.py next-folio`.
+3. Espera la aprobación. Si piden cambios, aplícalos y vuelve a presentarla completa.
+4. `python scripts/cfdi.py stamp references/ingreso-pue.json` e informa el UUID.
 
-Nunca presentes el ejemplo como una factura ya emitida. El JSON es únicamente una muestra para preparar y revisar.
+El JSON es una muestra para preparar y revisar; nunca lo presentes como factura emitida.
 
-## Descargar y entregar el comprobante (PDF/XML)
-
-`download` saca del servicio el comprobante ya timbrado y lo deja en disco. Necesita el UUID:
+## Cancelar y enviar por correo
 
 ```sh
-nt cfdi download UUID --format pdf --output factura.pdf
-nt cfdi download UUID --format xml --output factura.xml
+python scripts/cfdi.py cancel UUID --reason 02
+python scripts/cfdi.py cancel UUID --reason 01 --replacement UUID_SUSTITUTO
+python scripts/cfdi.py email UUID --to cliente@example.com
 ```
 
-Responde `{"path": "...", "bytes": N}`. Antes de entregarlo comprueba que el archivo existe, que el PDF empieza con `%PDF` y que pesa más de ~10 KB: un PDF de 0 bytes o un HTML de error no es un comprobante.
+Motivos SAT: `01` con errores y relación (requiere `--replacement`), `02` con errores sin relación, `03` no se llevó a cabo la operación, `04` operación nominativa en factura global. Ambas acciones son efectos reales: confirma UUID, receptor y total con el usuario antes de ejecutarlas.
 
-### Entrega por WhatsApp (gateway del servidor remoto)
+## Referencia
 
-Cuando la petición llegó por WhatsApp, el comprobante se manda como **archivo adjunto**, no como texto, liga ni base64. El gateway convierte la etiqueta `MEDIA:<ruta absoluta>` en un documento nativo:
+- [`references/api.md`](references/api.md): todas las rutas HTTP, sus parámetros y respuestas, y el script que usa cada una.
+- [`references/cfdi40/`](references/cfdi40/README.md): 20 ejemplos CFDI 4.0 en JSON y XML, con el resultado de `prepare` de cada uno.
+- [`references/cliente.json`](references/cliente.json): alta de cliente.
+- Ayuda de cada script: `python scripts/<script>.py --help` y `python scripts/<script>.py <comando> --help`.
 
-```
-Aquí está tu factura, UUID EE5C1905-2143-47EC-A51C-91D95EE7B552.  MEDIA:/tmp/EE5C1905.pdf
-```
+Scripts: `auth.py` (sesión y modo), `directory.py` (cuenta, empresas, clientes), `catalogs.py` (catálogos SAT), `cfdi.py` (facturas timbradas), `drafts.py` (PRE-CFDI y folios). `ntlink_api.py` es el cliente HTTP común.
 
-- `[[as_document]] MEDIA:/tmp/factura.pdf` fuerza el envío como documento (cuando el archivo podría tratarse como imagen o comprimirse).
-- La ruta debe ser absoluta y existir en el mismo host donde corre el agente: en el servidor remoto `/tmp` o `~/.hermes/tmp`; en Windows `%LOCALAPPDATA%\Temp`. Nunca dentro del repositorio.
-- Para enviarlo a otro chat o a una persona distinta del interlocutor: `hermes send --to whatsapp:<numero> "Factura UUID … MEDIA:/tmp/factura.pdf"`.
-- Un `MEDIA:` por archivo. Si piden PDF y XML, van dos mensajes (o dos etiquetas); el XML se adjunta igual que el PDF.
-- Confirma UUID, RFC del receptor y total antes de enviar: es un comprobante fiscal emitido, no una vista previa.
-- No borres el archivo hasta que el envío termine; si piden reenviarlo, vuelve a descargarlo con `download` en lugar de confiar en una ruta vieja.
-- En modo *bot* del servidor remoto la herramienta `terminal` está restringida: si no puedes descargar el PDF, dilo; no inventes rutas ni adjuntos.
+## Problemas frecuentes
 
-En la CLI local (terminal) `MEDIA:` no se intercepta: ahí se entrega la ruta absoluta y el usuario abre el archivo.
+- `401`: la sesión venció. Ejecuta `auth.py login` (en pruebas, `auth.py logout` y el siguiente comando vuelve a entrar con la cuenta de demostración). Revisa si la acción anterior tuvo efecto antes de repetirla.
+- `exito:false` o `400`: el backend rechazó los datos; lee el mensaje, corrige el JSON y vuelve a ejecutar `prepare`.
+- `cfdiRelacionados debe ser un objeto`: la API acepta un solo grupo, `{"tipoRelacion", "cfdiRelacionado": [{"uuid"}]}`.
+- `File exists`: el archivo de salida ya existe; elige otra ruta o usa `--force`.
+- `email` → 503 «Configura SMTP…»: el servidor no tiene correo configurado (así está hoy el entorno de pruebas). Entrega el PDF/XML descargado en su lugar.
+- `cancel` → 500 «El certificador no devolvió un acuse de cancelación»: el PAC no confirmó la cancelación y el CFDI sigue vigente. Hoy ocurre siempre en el entorno de pruebas. Comprueba con `cfdi.py list --filter uuid=UUID` (`fechaCancelacion`) y no digas que se canceló.
+- `validate` de un CFDI timbrado en pruebas marca «Verificacion del sello del PAC: NO» porque el PAC de pruebas usa un certificado de prueba; el resto de las validaciones deben salir «SI».
+- `python` no encontrado: usa `py` (Windows) o `python3` (Linux/macOS).
 
-## PRE-CFDI y folios
-
-Hay **dos folios distintos** y no se mezclan:
-
-| Comando | Endpoint | Qué devuelve | ¿Se usa para timbrar? |
-|---|---|---|---|
-| `nt drafts next-folio` | `GET /api/v2/pre-cfdis/folios/next` | El **siguiente folio fiscal real** de la empresa (consecutivo de la empresa + 1, formato de 9 dígitos, ej. `000009135`). **Solo consulta: no lo reserva ni lo incrementa.** | **Sí.** Es la fuente del folio al emitir. |
-| `nt drafts reserve-folio` | `POST /api/v2/pre-cfdis/folios/reserve` | Un folio **provisional** de captura `BOR-…` (ej. `BOR-000000012`); consume un contador aparte. | **No.** Nunca se timbra. |
-
-Al crear un PRE-CFDI, sigue el mismo criterio de captura que la aplicación:
-
-1. Inicia un CFDI 4.0 con los campos por completar, fecha local de Ciudad de México, tipo ingreso, MXN/PUE y conceptos vacíos.
-2. **Para el folio de una factura que se va a timbrar, pide el consecutivo con `nt drafts next-folio`** y úsalo tal cual en el campo `folio`. Como no reserva, puedes consultarlo las veces que hagan falta: devuelve el mismo valor hasta que la emisión se complete. Consultarlo y no emitir no quema folios.
-3. Si lo que quieres es un borrador de captura sin intención de emitir todavía, usa `nt drafts reserve-folio` (`BOR-…`).
-4. Al editar un borrador existente, conserva su ID y actualiza ese mismo borrador en lugar de crear otro para reemplazarlo.
-
-### Pasar un PRE-CFDI guardado al timbrado con el siguiente folio
-
-Cuando el usuario decida intentar timbrar un PRE-CFDI existente desde el CLI, antes de preparar la revisión final ejecuta `nt drafts next-folio` en el perfil y empresa activos. Toma el valor de `folio` devuelto y sustitúyelo en el JSON del mismo borrador en lugar de `BOR-...` o cualquier folio provisional, salvo que el usuario haya pedido expresamente otro folio; en ese caso confirma la diferencia antes de cambiarlo. `next-folio` consulta, pero no reserva el consecutivo.
-
-Guarda el cambio en el mismo borrador con `nt drafts update ID cfdi.json` y descarga el PDF actualizado con `nt drafts download ID --format pdf --output precfdi.pdf`. Presenta ese PDF y la factura completa con el nuevo folio para revisión. Solo tras la aprobación explícita de esa versión ejecuta `nt drafts stamp ID cfdi.json`. No uses el PDF anterior ni timbres con el folio provisional BOR. Si la secuencia cambia entre la consulta y el timbrado, no reintentes a ciegas: consulta `next-folio` otra vez, actualiza el mismo borrador, entrega el PDF corregido y vuelve a pedir aprobación para los datos cambiados.
-
-Reglas de folio:
-
-- El `id` identifica el borrador; `BOR-…` identifica provisionalmente una captura. Ninguno de los dos es el folio fiscal.
-- Un folio `BOR-…` **nunca** se timbra. Antes de `stamp`, el campo `folio` del JSON debe ser el consecutivo real (`next-folio`) o el que indique explícitamente el usuario.
-- `Serie` y `Folio` son campos independientes. No concatentes la serie para inventar la secuencia.
-- No inventes folios a mano (fechas, `PUE…`, incrementos propios) ni reutilices el de otra factura: el consecutivo lo da la empresa.
-- Si el usuario pide un folio específico y difiere de `next-folio`, confírmalo con él antes de timbrar; si el sistema rechaza el folio por longitud o formato, informa el problema y no lo trunques.
-
-El borrador se crea/actualiza con `nt drafts create` y `nt drafts update`; consulta `nt drafts --help` para ver el formato exacto. `nt cfdi prepare` valida/prepara sin guardar ni reservar folio.
-
-Por defecto, entrega el PDF en la misma respuesta cada vez que crees o actualices correctamente un PRE-CFDI, aunque el usuario no lo solicite por separado; no preguntes si también lo quiere. Solo omítelo si el usuario pide expresamente no recibirlo. Si falla la descarga, conserva el ID y recupéralo; si sigue fallando, explica el problema y no afirmes que entregaste el archivo. El XML es adicional y no sustituye el PDF.
-
-
-### Entregar PDF/XML de un PRE-CFDI por WhatsApp
-
-El CLI `nt` 0.2.2 o posterior puede recuperar los archivos del borrador guardado con su ID. `drafts create` guarda el PRE-CFDI y descarga el PDF; si devuelve `pdfError`, conserva `metadata.id` y usa `drafts download`, sin repetir la creación.
-
-Para entregar un archivo solicitado por el usuario que escribió al gateway, guárdalo en una ruta absoluta del servidor:
-
-```sh
-mkdir -p "$HOME/.hermes/tmp"
-nt drafts download BORRADOR_ID --format pdf --output "$HOME/.hermes/tmp/PRE-CFDI-BORRADOR_ID.pdf"
-```
-
-Responde con la ruta real en `MEDIA:<ruta absoluta>` para adjuntarlo como documento. Para XML cambia `--format pdf` por `--format xml`. Entrega únicamente los archivos que el interlocutor actual pidió; no envíes a otro número salvo que indique expresamente el destinatario. El PDF se identifica como **PRE-CFDI/BORRADOR**, no está timbrado ni tiene validez fiscal. Descargarlo no timbra ni emite un mensaje. Comprueba que la descarga terminó y que la ruta existe antes de referirla en `MEDIA:`.
-Leer un PDF no autoriza guardarlo, convertirlo en borrador, emitirlo ni pagar. Para convertirlo en borrador, presenta primero el análisis y pide confirmación antes de persistirlo.
-
-## Actualizar y resolver problemas
-
-- Actualiza con `npm install --global @ntlinkmx/nt`.
-- Si PowerShell no encuentra `nt`, revisa `Get-Command nt` y vuelve a abrir la terminal tras instalar. En Linux, asegúrate de que el directorio global de npm está en `PATH`.
-- Si aparece un 401 por una sesión vencida, vuelve a autenticar con `nt auth login` y repite solo después de revisar si la acción anterior tuvo efecto.
-- Si npm devuelve 404, comprueba que la publicación inicial terminó y que el nombre es `@ntlinkmx/nt`.
+El CLI de Node `nt` (`npm install --global @ntlinkmx/nt`) es una alternativa opcional que usa la misma API y el mismo archivo de sesión. Los scripts no lo necesitan.

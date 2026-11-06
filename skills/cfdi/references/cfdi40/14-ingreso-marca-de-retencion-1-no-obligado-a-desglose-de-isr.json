@@ -1,0 +1,96 @@
+{
+  "version": "4.0",
+  "serie": "A",
+  "folio": "649",
+  "fecha": "2025-07-07T10:20:20",
+  "formaPago": "01",
+  "condicionesDePago": "3 MESES",
+  "subtotal": "22500.00",
+  "descuento": "22500.00",
+  "moneda": "MXN",
+  "tipoCambio": "1",
+  "total": "2700.00",
+  "tipoDeComprobante": "I",
+  "exportacion": "01",
+  "metodoPago": "PUE",
+  "lugarExpedicion": "67800",
+  "emisor": {
+    "rfc": "URE180429TM6",
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601"
+  },
+  "receptor": {
+    "rfc": "NLC091211KC6",
+    "nombre": "NT LINK COMUNICACIONES",
+    "domicilioFiscalReceptor": "04100",
+    "regimenFiscalReceptor": "601",
+    "usoCfdi": "S01"
+  },
+  "conceptos": [
+    {
+      "claveProdServ": "10101500",
+      "noIdentificacion": "00001",
+      "cantidad": "1.5",
+      "claveUnidad": "F52",
+      "unidad": "TONELADA",
+      "descripcion": "ACERO",
+      "valorUnitario": "15000.00",
+      "importe": "22500.00",
+      "descuento": "22500.00",
+      "objetoImp": "02",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "22500.00",
+            "impuesto": "002",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.160000",
+            "importe": "3600.00"
+          },
+          {
+            "base": "22500.00",
+            "impuesto": "002",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.000000",
+            "importe": "0.00"
+          }
+        ],
+        "retenciones": [
+          {
+            "base": "22500.00",
+            "impuesto": "002",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.040000",
+            "importe": "900.00"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosRetenidos": "900.00",
+    "totalImpuestosTrasladados": "3600.00",
+    "retenciones": [
+      {
+        "impuesto": "002",
+        "importe": "900.00"
+      }
+    ],
+    "traslados": [
+      {
+        "base": "22500.00",
+        "impuesto": "002",
+        "tipoFactor": "Tasa",
+        "tasaOCuota": "0.160000",
+        "importe": "3600.00"
+      },
+      {
+        "base": "22500.00",
+        "impuesto": "002",
+        "tipoFactor": "Tasa",
+        "tasaOCuota": "0.000000",
+        "importe": "0.00"
+      }
+    ]
+  }
+}

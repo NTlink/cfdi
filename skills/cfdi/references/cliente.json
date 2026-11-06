@@ -1,0 +1,15 @@
+{
+  "companyId": 7975,
+  "rfc": "SME170525C62",
+  "legalName": "SURETE MEXICO",
+  "taxRegime": "601",
+  "postalCode": "01000",
+  "email": "facturacion@example.com",
+  "phone": "5555555555",
+  "contact": "Cuentas por pagar",
+  "address": "Av. Ejemplo",
+  "exteriorNumber": "100",
+  "neighborhood": "Centro",
+  "city": "Ciudad de México",
+  "state": "CMX"
+}

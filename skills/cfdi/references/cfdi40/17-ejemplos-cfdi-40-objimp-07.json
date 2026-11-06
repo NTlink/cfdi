@@ -1,0 +1,103 @@
+{
+  "version": "4.0",
+  "folio": "87",
+  "fecha": "2026-09-10T07:58:22",
+  "subtotal": "4000.00",
+  "total": "4627.50",
+  "moneda": "MXN",
+  "tipoDeComprobante": "I",
+  "lugarExpedicion": "57424",
+  "formaPago": "28",
+  "serie": "OBJ-07",
+  "metodoPago": "PUE",
+  "exportacion": "01",
+  "informacionGlobal": {
+    "anio": "2024",
+    "meses": "08",
+    "periodicidad": "01"
+  },
+  "emisor": {
+    "rfc": "URE180429TM6",
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601"
+  },
+  "receptor": {
+    "rfc": "XAXX010101000",
+    "nombre": "PUBLICO EN GENERAL",
+    "usoCfdi": "S01",
+    "regimenFiscalReceptor": "616",
+    "domicilioFiscalReceptor": "57424"
+  },
+  "conceptos": [
+    {
+      "cantidad": "1",
+      "claveProdServ": "01010101",
+      "claveUnidad": "ACT",
+      "descripcion": "Venta",
+      "importe": "1000.00",
+      "unidad": "No aplica",
+      "valorUnitario": "1000.00",
+      "objetoImp": "07",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "1000.00",
+            "importe": "160.00",
+            "impuesto": "003",
+            "tasaOCuota": "0.160000",
+            "tipoFactor": "Cuota"
+          }
+        ],
+        "retenciones": [
+          {
+            "base": "1000",
+            "impuesto": "001",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.012500",
+            "importe": "12.5"
+          }
+        ]
+      }
+    },
+    {
+      "cantidad": "1",
+      "claveProdServ": "01010101",
+      "claveUnidad": "ACT",
+      "descripcion": "Venta",
+      "importe": "3000.00",
+      "unidad": "No aplica",
+      "valorUnitario": "3000.00",
+      "objetoImp": "07",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "3000.00",
+            "importe": "480.00",
+            "impuesto": "003",
+            "tasaOCuota": "0.160000",
+            "tipoFactor": "Cuota"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosTrasladados": "640.00",
+    "totalImpuestosRetenidos": "12.5",
+    "retenciones": [
+      {
+        "impuesto": "001",
+        "importe": "12.5"
+      }
+    ],
+    "traslados": [
+      {
+        "importe": "640.00",
+        "base": "4000.00",
+        "impuesto": "003",
+        "tasaOCuota": "0.160000",
+        "tipoFactor": "Cuota"
+      }
+    ]
+  }
+}

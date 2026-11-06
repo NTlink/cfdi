@@ -1,0 +1,69 @@
+{
+  "exportacion": "01",
+  "fecha": "2025-07-07T09:46:43",
+  "folio": "1432",
+  "formaPago": "02",
+  "lugarExpedicion": "26000",
+  "metodoPago": "PUE",
+  "moneda": "MXN",
+  "serie": "PREDIAL",
+  "subtotal": "6474.81",
+  "tipoDeComprobante": "E",
+  "total": "7510.77",
+  "version": "4.0",
+  "cfdiRelacionados": {
+    "tipoRelacion": "01",
+    "cfdiRelacionado": [
+      {
+        "uuid": "8B2117CA-704D-5800-BE9F-9F94DD1BF91E"
+      }
+    ]
+  },
+  "emisor": {
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601",
+    "rfc": "URE180429TM6"
+  },
+  "receptor": {
+    "domicilioFiscalReceptor": "86400",
+    "nombre": "FELIX MANUEL ANDRADE BALLADO",
+    "regimenFiscalReceptor": "616",
+    "rfc": "AABF800614HI0",
+    "usoCfdi": "S01"
+  },
+  "conceptos": [
+    {
+      "cantidad": "1",
+      "claveProdServ": "80131500",
+      "claveUnidad": "CE",
+      "descripcion": "ARRENDAMIENTO DE JUAREZ PTE 108-A",
+      "importe": "6474.81",
+      "objetoImp": "02",
+      "unidad": "No aplica",
+      "valorUnitario": "6474.81",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "6474.81",
+            "importe": "1035.96",
+            "impuesto": "002",
+            "tasaOCuota": "0.160000",
+            "tipoFactor": "Tasa"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosTrasladados": "1035.96",
+    "traslados": [
+      {
+        "base": "6474.81",
+        "importe": "1035.96",
+        "impuesto": "002",
+        "tasaOCuota": "0.160000",
+        "tipoFactor": "Tasa"
+      }
+    ]
+  }
+}

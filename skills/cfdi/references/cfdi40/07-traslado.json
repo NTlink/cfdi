@@ -1,0 +1,35 @@
+{
+  "exportacion": "01",
+  "fecha": "2026-09-10T07:50:27",
+  "folio": "1432",
+  "lugarExpedicion": "26000",
+  "moneda": "MXN",
+  "serie": "PREDIAL",
+  "subtotal": "0.00",
+  "tipoDeComprobante": "T",
+  "total": "0.00",
+  "version": "4.0",
+  "emisor": {
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601",
+    "rfc": "URE180429TM6"
+  },
+  "receptor": {
+    "domicilioFiscalReceptor": "86400",
+    "nombre": "FELIX MANUEL ANDRADE BALLADO",
+    "regimenFiscalReceptor": "616",
+    "rfc": "AABF800614HI0",
+    "usoCfdi": "S01"
+  },
+  "conceptos": [
+    {
+      "cantidad": "1",
+      "claveProdServ": "01010101",
+      "claveUnidad": "E48",
+      "descripcion": "Traslado de Mecancia",
+      "importe": "0",
+      "objetoImp": "01",
+      "valorUnitario": "0"
+    }
+  ]
+}

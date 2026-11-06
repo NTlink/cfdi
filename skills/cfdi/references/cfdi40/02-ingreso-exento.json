@@ -1,0 +1,72 @@
+{
+  "condicionesDePago": "CONTADO",
+  "exportacion": "01",
+  "fecha": "2025-07-07T09:10:05",
+  "folio": "5",
+  "formaPago": "01",
+  "lugarExpedicion": "58160",
+  "metodoPago": "PUE",
+  "moneda": "MXN",
+  "subtotal": "2000.00",
+  "tipoDeComprobante": "I",
+  "total": "1800.00",
+  "version": "4.0",
+  "emisor": {
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601",
+    "rfc": "URE180429TM6"
+  },
+  "receptor": {
+    "domicilioFiscalReceptor": "57740",
+    "nombre": "COMERCIALIZADORA TEODORIKAS",
+    "regimenFiscalReceptor": "601",
+    "rfc": "CTE950627K46",
+    "usoCfdi": "G03"
+  },
+  "conceptos": [
+    {
+      "cantidad": "1",
+      "claveProdServ": "85121600",
+      "claveUnidad": "E48",
+      "descripcion": "HONORARIOS MEDICOS",
+      "importe": "2000",
+      "noIdentificacion": "1",
+      "objetoImp": "02",
+      "valorUnitario": "2000",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "2000",
+            "impuesto": "002",
+            "tipoFactor": "Exento"
+          }
+        ],
+        "retenciones": [
+          {
+            "base": "2000",
+            "importe": "200.00",
+            "impuesto": "001",
+            "tasaOCuota": "0.100000",
+            "tipoFactor": "Tasa"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosRetenidos": "200.00",
+    "retenciones": [
+      {
+        "importe": "200.00",
+        "impuesto": "001"
+      }
+    ],
+    "traslados": [
+      {
+        "base": "2000",
+        "impuesto": "002",
+        "tipoFactor": "Exento"
+      }
+    ]
+  }
+}

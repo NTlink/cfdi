@@ -1,0 +1,91 @@
+{
+  "exportacion": "01",
+  "fecha": "2025-07-07T09:06:02",
+  "folio": "1432",
+  "formaPago": "02",
+  "lugarExpedicion": "26000",
+  "metodoPago": "PUE",
+  "moneda": "MXN",
+  "serie": "PREDIAL",
+  "subtotal": "6474.81",
+  "tipoDeComprobante": "I",
+  "total": "5999.99",
+  "version": "4.0",
+  "emisor": {
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601",
+    "rfc": "URE180429TM6"
+  },
+  "receptor": {
+    "domicilioFiscalReceptor": "86400",
+    "nombre": "FELIX MANUEL ANDRADE BALLADO",
+    "regimenFiscalReceptor": "616",
+    "rfc": "AABF800614HI0",
+    "usoCfdi": "S01"
+  },
+  "conceptos": [
+    {
+      "cantidad": "1",
+      "claveProdServ": "80131500",
+      "claveUnidad": "CE",
+      "descripcion": "ARRENDAMIENTO DE JUAREZ PTE 108-A",
+      "importe": "6474.81",
+      "objetoImp": "02",
+      "unidad": "No aplica",
+      "valorUnitario": "6474.81",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "6474.81",
+            "importe": "517.98",
+            "impuesto": "002",
+            "tasaOCuota": "0.080000",
+            "tipoFactor": "Tasa"
+          }
+        ],
+        "retenciones": [
+          {
+            "base": "6474.81",
+            "importe": "345.32",
+            "impuesto": "002",
+            "tasaOCuota": "0.053333",
+            "tipoFactor": "Tasa"
+          },
+          {
+            "base": "6474.81",
+            "importe": "647.48",
+            "impuesto": "001",
+            "tasaOCuota": "0.100000",
+            "tipoFactor": "Tasa"
+          }
+        ]
+      },
+      "cuentaPredial": {
+        "numero": "0150880014"
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosRetenidos": "992.80",
+    "totalImpuestosTrasladados": "517.98",
+    "retenciones": [
+      {
+        "importe": "647.48",
+        "impuesto": "001"
+      },
+      {
+        "importe": "345.32",
+        "impuesto": "002"
+      }
+    ],
+    "traslados": [
+      {
+        "base": "6474.81",
+        "importe": "517.98",
+        "impuesto": "002",
+        "tasaOCuota": "0.080000",
+        "tipoFactor": "Tasa"
+      }
+    ]
+  }
+}

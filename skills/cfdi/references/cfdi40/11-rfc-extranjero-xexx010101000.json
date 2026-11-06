@@ -1,0 +1,65 @@
+{
+  "condicionesDePago": "condiciones",
+  "exportacion": "01",
+  "fecha": "2025-07-07T10:16:10",
+  "folio": "01",
+  "formaPago": "02",
+  "lugarExpedicion": "58000",
+  "metodoPago": "PUE",
+  "moneda": "USD",
+  "serie": "A",
+  "subtotal": "100.00",
+  "tipoCambio": "19.86",
+  "tipoDeComprobante": "I",
+  "total": "116.00",
+  "version": "4.0",
+  "emisor": {
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601",
+    "rfc": "URE180429TM6"
+  },
+  "receptor": {
+    "domicilioFiscalReceptor": "58000",
+    "nombre": "PRUEBA",
+    "numRegIdTrib": "272820681",
+    "regimenFiscalReceptor": "616",
+    "residenciaFiscal": "USA",
+    "rfc": "XEXX010101000",
+    "usoCfdi": "S01"
+  },
+  "conceptos": [
+    {
+      "cantidad": "1",
+      "claveProdServ": "80131500",
+      "claveUnidad": "CE",
+      "descripcion": "ARRENDAMIENTO DE JUAREZ PTE 108-A",
+      "importe": "100.00",
+      "objetoImp": "02",
+      "unidad": "No aplica",
+      "valorUnitario": "100.00",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "100.00",
+            "importe": "16.00",
+            "impuesto": "002",
+            "tasaOCuota": "0.160000",
+            "tipoFactor": "Tasa"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosTrasladados": "16.00",
+    "traslados": [
+      {
+        "base": "100.00",
+        "importe": "16.00",
+        "impuesto": "002",
+        "tasaOCuota": "0.160000",
+        "tipoFactor": "Tasa"
+      }
+    ]
+  }
+}

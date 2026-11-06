@@ -1,0 +1,66 @@
+{
+  "exportacion": "01",
+  "fecha": "2025-07-07T10:02:33",
+  "formaPago": "01",
+  "lugarExpedicion": "60570",
+  "metodoPago": "PUE",
+  "moneda": "MXN",
+  "serie": "G",
+  "subtotal": "1508.00",
+  "tipoCambio": "1",
+  "tipoDeComprobante": "I",
+  "total": "1749.28",
+  "version": "4.0",
+  "emisor": {
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601",
+    "rfc": "URE180429TM6"
+  },
+  "receptor": {
+    "domicilioFiscalReceptor": "86400",
+    "nombre": "FELIX MANUEL ANDRADE BALLADO",
+    "regimenFiscalReceptor": "616",
+    "rfc": "AABF800614HI0",
+    "usoCfdi": "S01"
+  },
+  "conceptos": [
+    {
+      "cantidad": "26.00",
+      "claveProdServ": "10226401",
+      "claveUnidad": "H87",
+      "descripcion": "Tuberosa viva doble",
+      "importe": "1508.00",
+      "objetoImp": "02",
+      "valorUnitario": "58.00",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "1508.00",
+            "importe": "241.28",
+            "impuesto": "002",
+            "tasaOCuota": "0.160000",
+            "tipoFactor": "Tasa"
+          }
+        ]
+      },
+      "aCuentaTerceros": {
+        "domicilioFiscalACuentaTerceros": "04100",
+        "nombreACuentaTerceros": "NT LINK COMUNICACIONES",
+        "regimenFiscalACuentaTerceros": "610",
+        "rfcACuentaTerceros": "NLC091211KC6"
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosTrasladados": "241.28",
+    "traslados": [
+      {
+        "base": "1508.00",
+        "importe": "241.28",
+        "impuesto": "002",
+        "tasaOCuota": "0.160000",
+        "tipoFactor": "Tasa"
+      }
+    ]
+  }
+}

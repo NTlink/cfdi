@@ -1,0 +1,38 @@
+{
+  "exportacion": "01",
+  "fecha": "2025-07-07T10:17:00",
+  "folio": "1234",
+  "formaPago": "02",
+  "lugarExpedicion": "26000",
+  "metodoPago": "PUE",
+  "moneda": "MXN",
+  "serie": "MA01",
+  "subtotal": "6474.81",
+  "tipoDeComprobante": "I",
+  "total": "6474.81",
+  "version": "4.0",
+  "emisor": {
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601",
+    "rfc": "URE180429TM6"
+  },
+  "receptor": {
+    "domicilioFiscalReceptor": "86400",
+    "nombre": "FELIX MANUEL ANDRADE BALLADO",
+    "regimenFiscalReceptor": "616",
+    "rfc": "AABF800614HI0",
+    "usoCfdi": "S01"
+  },
+  "conceptos": [
+    {
+      "cantidad": "1",
+      "claveProdServ": "11121600",
+      "claveUnidad": "X8C",
+      "descripcion": "Madera",
+      "importe": "6474.81",
+      "objetoImp": "01",
+      "unidad": "Pieza",
+      "valorUnitario": "6474.81"
+    }
+  ]
+}

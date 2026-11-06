@@ -1,0 +1,78 @@
+{
+  "exportacion": "01",
+  "fecha": "2025-07-07T10:10:12",
+  "formaPago": "01",
+  "lugarExpedicion": "60570",
+  "metodoPago": "PUE",
+  "moneda": "MXN",
+  "serie": "G",
+  "subtotal": "6670.00",
+  "tipoCambio": "1",
+  "tipoDeComprobante": "I",
+  "total": "7737.20",
+  "version": "4.0",
+  "cfdiRelacionados": [
+    {
+      "tipoRelacion": "04",
+      "cfdiRelacionado": [
+        {
+          "uuid": "7528D559-7B38-54C2-8E2C-12162B9D39D5"
+        }
+      ]
+    },
+    {
+      "tipoRelacion": "01",
+      "cfdiRelacionado": [
+        {
+          "uuid": "19810A61-2843-5F9E-A88D-86241BAC3F47"
+        }
+      ]
+    }
+  ],
+  "emisor": {
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601",
+    "rfc": "URE180429TM6"
+  },
+  "receptor": {
+    "domicilioFiscalReceptor": "39660",
+    "nombre": "GRUPO ALOHA",
+    "regimenFiscalReceptor": "603",
+    "rfc": "GAL791116HB0",
+    "usoCfdi": "G01"
+  },
+  "conceptos": [
+    {
+      "cantidad": "58.00",
+      "claveProdServ": "10226401",
+      "claveUnidad": "H87",
+      "descripcion": "Tuberosa viva doble",
+      "importe": "6670.00",
+      "objetoImp": "02",
+      "valorUnitario": "115.00",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "6670.00",
+            "importe": "1067.20",
+            "impuesto": "002",
+            "tasaOCuota": "0.160000",
+            "tipoFactor": "Tasa"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosTrasladados": "1067.20",
+    "traslados": [
+      {
+        "base": "6670.00",
+        "importe": "1067.20",
+        "impuesto": "002",
+        "tasaOCuota": "0.160000",
+        "tipoFactor": "Tasa"
+      }
+    ]
+  }
+}

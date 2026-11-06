@@ -1,0 +1,84 @@
+{
+  "version": "4.0",
+  "folio": "87",
+  "fecha": "2026-09-10T07:55:02",
+  "subtotal": "4000.00",
+  "total": "3975.00",
+  "moneda": "MXN",
+  "tipoDeComprobante": "I",
+  "lugarExpedicion": "57424",
+  "formaPago": "28",
+  "serie": "obj-06",
+  "metodoPago": "PUE",
+  "exportacion": "01",
+  "informacionGlobal": {
+    "anio": "2024",
+    "meses": "08",
+    "periodicidad": "01"
+  },
+  "emisor": {
+    "rfc": "URE180429TM6",
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601"
+  },
+  "receptor": {
+    "rfc": "XAXX010101000",
+    "nombre": "PUBLICO EN GENERAL",
+    "usoCfdi": "S01",
+    "regimenFiscalReceptor": "616",
+    "domicilioFiscalReceptor": "57424"
+  },
+  "conceptos": [
+    {
+      "cantidad": "1",
+      "claveProdServ": "01010101",
+      "claveUnidad": "ACT",
+      "descripcion": "Venta",
+      "importe": "1000.00",
+      "unidad": "No aplica",
+      "valorUnitario": "1000.00",
+      "objetoImp": "06",
+      "impuestos": {
+        "retenciones": [
+          {
+            "base": "1000",
+            "impuesto": "001",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.012500",
+            "importe": "12.5"
+          }
+        ]
+      }
+    },
+    {
+      "cantidad": "1",
+      "claveProdServ": "01010101",
+      "claveUnidad": "ACT",
+      "descripcion": "Venta",
+      "importe": "3000.00",
+      "unidad": "No aplica",
+      "valorUnitario": "3000.00",
+      "objetoImp": "06",
+      "impuestos": {
+        "retenciones": [
+          {
+            "base": "1000",
+            "impuesto": "001",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.012500",
+            "importe": "12.5"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosRetenidos": "25.00",
+    "retenciones": [
+      {
+        "impuesto": "001",
+        "importe": "25.00"
+      }
+    ]
+  }
+}

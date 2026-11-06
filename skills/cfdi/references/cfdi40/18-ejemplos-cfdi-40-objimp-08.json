@@ -1,0 +1,62 @@
+{
+  "version": "4.0",
+  "serie": "OBJ-08",
+  "folio": "20439",
+  "fecha": "2025-07-07T10:30:50",
+  "formaPago": "99",
+  "condicionesDePago": "30 DIAS",
+  "subtotal": "1128.21",
+  "descuento": "0.00",
+  "moneda": "MXN",
+  "tipoCambio": "1",
+  "total": "1114.11",
+  "tipoDeComprobante": "I",
+  "metodoPago": "PPD",
+  "lugarExpedicion": "64000",
+  "exportacion": "01",
+  "emisor": {
+    "rfc": "URE180429TM6",
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601"
+  },
+  "receptor": {
+    "rfc": "XAXX010101000",
+    "nombre": "PUBLICO GENERAL",
+    "usoCfdi": "S01",
+    "regimenFiscalReceptor": "616",
+    "domicilioFiscalReceptor": "64000"
+  },
+  "conceptos": [
+    {
+      "noIdentificacion": "ID",
+      "descripcion": "INTERESES DEVENGADOS  AL MES DE JUNIO 2024",
+      "cantidad": "1",
+      "valorUnitario": "1128.21",
+      "importe": "1128.21",
+      "descuento": "0.00",
+      "claveUnidad": "E48",
+      "claveProdServ": "84121500",
+      "objetoImp": "08",
+      "impuestos": {
+        "retenciones": [
+          {
+            "base": "1128.21",
+            "impuesto": "001",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.012500",
+            "importe": "14.10"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosRetenidos": "14.10",
+    "retenciones": [
+      {
+        "impuesto": "001",
+        "importe": "14.10"
+      }
+    ]
+  }
+}

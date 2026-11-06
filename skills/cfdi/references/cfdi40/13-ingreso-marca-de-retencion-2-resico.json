@@ -1,0 +1,79 @@
+{
+  "version": "4.0",
+  "serie": "NC",
+  "folio": "5",
+  "fecha": "2025-07-07T10:18:34",
+  "formaPago": "03",
+  "condicionesDePago": "Contado",
+  "subtotal": "113725.51",
+  "moneda": "MXN",
+  "total": "131220.59",
+  "tipoDeComprobante": "I",
+  "exportacion": "01",
+  "metodoPago": "PUE",
+  "lugarExpedicion": "57170",
+  "emisor": {
+    "rfc": "URE180429TM6",
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601"
+  },
+  "receptor": {
+    "rfc": "NLC091211KC6",
+    "nombre": "NT LINK COMUNICACIONES",
+    "domicilioFiscalReceptor": "04100",
+    "regimenFiscalReceptor": "601",
+    "usoCfdi": "G02"
+  },
+  "conceptos": [
+    {
+      "claveProdServ": "85122000",
+      "noIdentificacion": "Serv-Cto",
+      "cantidad": "1.000000",
+      "claveUnidad": "ACT",
+      "unidad": "Activ.",
+      "descripcion": "SERVICIO DENTAL",
+      "valorUnitario": "113725.510000",
+      "importe": "113725.51",
+      "objetoImp": "02",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "113725.51",
+            "impuesto": "002",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.160000",
+            "importe": "18196.08"
+          }
+        ],
+        "retenciones": [
+          {
+            "base": "56080.25",
+            "impuesto": "001",
+            "tipoFactor": "Tasa",
+            "tasaOCuota": "0.012500",
+            "importe": "701.00"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosTrasladados": "18196.08",
+    "totalImpuestosRetenidos": "701.00",
+    "retenciones": [
+      {
+        "impuesto": "001",
+        "importe": "701.00"
+      }
+    ],
+    "traslados": [
+      {
+        "base": "113725.51",
+        "impuesto": "002",
+        "tipoFactor": "Tasa",
+        "tasaOCuota": "0.160000",
+        "importe": "18196.08"
+      }
+    ]
+  }
+}

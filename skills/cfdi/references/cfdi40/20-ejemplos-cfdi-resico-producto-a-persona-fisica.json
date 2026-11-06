@@ -1,0 +1,72 @@
+{
+  "condicionesDePago": "CONTADO",
+  "exportacion": "01",
+  "fecha": "2025-07-31T16:58:58",
+  "folio": "5",
+  "formaPago": "01",
+  "lugarExpedicion": "58160",
+  "metodoPago": "PUE",
+  "moneda": "MXN",
+  "subtotal": "2000.00",
+  "tipoDeComprobante": "I",
+  "total": "1975.00",
+  "version": "4.0",
+  "emisor": {
+    "nombre": "UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV",
+    "regimenFiscal": "601",
+    "rfc": "URE180429TM6"
+  },
+  "receptor": {
+    "domicilioFiscalReceptor": "04100",
+    "nombre": "NT LINK COMUNICACIONES",
+    "regimenFiscalReceptor": "601",
+    "rfc": "NLC091211KC6",
+    "usoCfdi": "S01"
+  },
+  "conceptos": [
+    {
+      "cantidad": "1",
+      "claveProdServ": "10226401",
+      "claveUnidad": "E48",
+      "descripcion": "Tuberosa viva doble",
+      "importe": "2000",
+      "noIdentificacion": "1",
+      "objetoImp": "02",
+      "valorUnitario": "2000",
+      "impuestos": {
+        "traslados": [
+          {
+            "base": "2000",
+            "impuesto": "002",
+            "tipoFactor": "Exento"
+          }
+        ],
+        "retenciones": [
+          {
+            "base": "2000",
+            "importe": "25.00",
+            "impuesto": "001",
+            "tasaOCuota": "0.012500",
+            "tipoFactor": "Tasa"
+          }
+        ]
+      }
+    }
+  ],
+  "impuestos": {
+    "totalImpuestosRetenidos": "25.00",
+    "retenciones": [
+      {
+        "importe": "25.00",
+        "impuesto": "001"
+      }
+    ],
+    "traslados": [
+      {
+        "base": "2000",
+        "impuesto": "002",
+        "tipoFactor": "Exento"
+      }
+    ]
+  }
+}
