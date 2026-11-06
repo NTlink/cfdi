@@ -4,6 +4,15 @@ Las rutas que usan los scripts. Todas, salvo `auth/login`, requieren `Authorizat
 
 Base de pruebas: `http://pruebas.ntlink.com.mx:8092`. Producción todavía no existe.
 
+Timbrado `/api/v2/cfdis/stamp` y `/api/v2/pre-cfdis/{id}/stamp`: fecha inválida
+o futura y folio distinto del siguiente de la emisora devuelven 400 con mensaje
+específico antes del PAC y del diario. Usa hora CDMX sin Z/offset y consulta
+`GET /api/v2/pre-cfdis/folios/next?companyId=ID` con
+`drafts.py next-folio --company ID`. Omitir companyId usa la empresa de sesión.
+La consulta valida alcance y no reserva ni incrementa. Folios BOR, vacíos,
+personalizados, atrasados o adelantados no se timbran; actualiza el mismo
+borrador y revisa otra vez. No se sustituyen datos revisados silenciosamente.
+
 ## Sesión
 
 | Método | Ruta | Script | Notas |

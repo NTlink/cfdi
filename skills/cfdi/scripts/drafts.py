@@ -20,7 +20,7 @@ def build(p):
     d.add_argument("--format", choices=["xml", "pdf"], default="pdf")
     d.add_argument("--output")
     d.add_argument("--force", action="store_true")
-    sub.add_parser("next-folio", help="Siguiente folio fiscal de la empresa; solo consulta, no reserva.")
+    sub.add_parser("next-folio", help="Siguiente folio fiscal de la empresa; solo consulta, no reserva.").add_argument("--company", type=int, help="ID de la empresa emisora; omitir usa la empresa de sesión.")
     sub.add_parser("reserve-folio", help="Reservar un folio provisional BOR-… (nunca se timbra).")
     s = sub.add_parser("stamp", help="TIMBRAR un PRE-CFDI. Efecto fiscal real: requiere aprobación explícita.")
     s.add_argument("id")
@@ -50,7 +50,7 @@ def handle(a):
     if a.cmd == "download":
         return api.request("GET", "%s/%s/%s" % (base, api.q(a.id), a.format), output=a.output or "PRE-CFDI-%s.%s" % (a.id, a.format), force=a.force)
     if a.cmd == "next-folio":
-        return api.request("GET", base + "/folios/next")
+        return api.request("GET", base + "/folios/next", query=[("companyId", a.company)] if a.company else None)
     if a.cmd == "reserve-folio":
         return api.request("POST", base + "/folios/reserve")
     return api.request("POST", "%s/%s/stamp" % (base, api.q(a.id)), json_body=api.read_json(a.file))

@@ -113,6 +113,22 @@ python scripts/drafts.py reserve-folio
 
 ### Folios
 
+**Antes de emitir:** consulta `drafts.py next-folio --company COMPANY_ID` para
+la emisora y usa exactamente el valor recibido. No reserva: si otra emisión
+lo consume, vuelve a consultar, actualiza el mismo borrador y revisa de nuevo.
+El portal rechaza con 400 folios vacíos, BOR, personalizados, atrasados o
+adelantados. No inventes incrementos, fechas como folio ni trunques el valor.
+
+**Fecha:** hora real de `America/Mexico_City`, `YYYY-MM-DDTHH:mm:ss`, sin Z ni
+offset. No uses `utcnow()`, `toISOString()` ni borres la Z de una hora UTC:
+quitar la zona no convierte la hora. En Python usa
+`datetime.now(ZoneInfo('America/Mexico_City')).strftime('%Y-%m-%dT%H:%M:%S')`
+con `from datetime import datetime; from zoneinfo import ZoneInfo`. Si faltan
+zonas horarias, resuélvelo antes de emitir; no adivines la hora. No reutilices
+fechas de ejemplos antiguos. El backend rechaza fechas inválidas o futuras
+antes del PAC. Corrige el mismo borrador y vuelve a revisar; un 409 de
+conciliación no autoriza borrar candados ni reintentar a ciegas.
+
 | Script | Devuelve | ¿Se timbra? |
 |---|---|---|
 | `drafts.py next-folio` | El siguiente folio fiscal real de la empresa (ej. `000009135`). Solo consulta: no reserva ni incrementa. | **Sí**, es el folio para emitir. |
@@ -120,7 +136,7 @@ python scripts/drafts.py reserve-folio
 
 - Antes de timbrar un borrador, consulta `next-folio`, ponlo en `folio` en lugar de `BOR-…`, guarda con `drafts.py update`, descarga el PDF actualizado y preséntalo para revisión.
 - `serie` y `folio` son campos independientes. No inventes folios (fechas, incrementos propios) ni reutilices el de otra factura.
-- Si el usuario pide un folio distinto de `next-folio`, confírmalo. Si el sistema rechaza el folio, informa el error; no lo trunques.
+- Si el usuario pide otro folio, explica que el portal exige el siguiente de la empresa. No intentes saltarte la validación.
 
 ## Preparar un comprobante
 
