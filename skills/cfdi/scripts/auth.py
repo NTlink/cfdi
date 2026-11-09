@@ -14,11 +14,17 @@ def build(p):
     login.add_argument("--password-stdin", action="store_true")
     sub.add_parser("status", help="Perfil del sistema de la cuenta (GET /api/v2/customer/profile).")
     sub.add_parser("logout", help="Borrar el token guardado del perfil activo.")
+    for command in ("whatsapp-code", "whatsapp-register"):
+        action = sub.add_parser(command, help="Registro por WhatsApp sin iniciar sesión ni cambiar el perfil.")
+        action.add_argument("file", help="JSON con los datos del teléfono o del registro y código.")
     mode = sub.add_parser("mode", help="Ver el modo o cambiar a pruebas.")
     mode.add_argument("environment", nargs="?")
 
 
 def handle(a):
+    if a.cmd in ("whatsapp-code", "whatsapp-register"):
+        endpoint = "code" if a.cmd == "whatsapp-code" else "register"
+        return api.request("POST", "/api/v2/auth/whatsapp/" + endpoint, json_body=api.read_json(a.file), anonymous=True)
     if a.cmd == "login":
         email = a.email or input("Correo: ").strip()
         password = sys.stdin.readline().rstrip("\r\n") if a.password_stdin else os.environ.get("NTLINK_PASSWORD") or getpass.getpass("Contraseña: ")
