@@ -1,6 +1,6 @@
 ---
 name: cfdi
-description: Facturación electrónica mexicana (CFDI 4.0) y registro de cuenta desde WhatsApp con el backend de NTLink, desde Codex, Claude Code, OpenCode, Cursor o Hermes. Incluye scripts de Python sin dependencias para registrar usuarios por WhatsApp, listar empresas, clientes, catálogos SAT y facturas; crear clientes; preparar PRE-CFDI; descargar PDF/XML, y timbrar o cancelar con aprobación explícita. Úsala cuando alguien quiera registrarse por WhatsApp, crear, revisar, buscar, descargar, timbrar o cancelar una factura, o consultar datos fiscales de su cuenta NTLink.
+description: Facturación electrónica mexicana (CFDI 4.0) con el backend de NTLink desde cualquier agente (Codex, Claude Code, OpenCode, Cursor, Hermes). Incluye scripts de Python sin dependencias para listar empresas, clientes, catálogos SAT y facturas; crear clientes; preparar PRE-CFDI; descargar PDF/XML, y timbrar o cancelar con aprobación explícita. Úsala cuando el usuario quiera crear, revisar, buscar, descargar, timbrar o cancelar una factura, o consultar datos fiscales de su cuenta NTLink.
 ---
 
 # Cfdi — facturación CFDI con NTLink
@@ -17,18 +17,6 @@ Los scripts están en la carpeta `scripts/` **de esta skill**. Ejecútalos con s
 4. Producción todavía no existe: `auth.py mode production` solo responde «próximamente». No inventes una URL de producción.
 
 El token se guarda en `~/.ntlink-invoice/config.json` (Windows: `%USERPROFILE%\.ntlink-invoice\config.json`), el mismo archivo que usa el CLI `nt`. No muestres el token. Variables opcionales: `NTLINK_TOKEN`, `NTLINK_BASE_URL`, `NTLINK_PROFILE`, `NTLINK_TIMEOUT` (segundos).
-
-## Registro por WhatsApp (Hermes)
-
-Para un usuario que pide crear su cuenta desde WhatsApp, recopila nombre/razón social, RFC, CP, correo secundario y teléfono mexicano de diez dígitos. Confirma los datos antes de ejecutar. Usa el remitente real del gateway para comprobar el teléfono; no atribuyas el teléfono escrito por el modelo a la identidad del chat. No hace falta login ni cambiar el perfil activo.
-
-1. `python scripts/auth.py whatsapp-code telefono.json`, con `{"phone":"5512345678"}`. Envía un código mediante el backend; no inventes ni muestres códigos obtenidos de logs.
-2. Pide al usuario el código recibido y ejecuta `python scripts/auth.py whatsapp-register registro.json`, con `{"name":"Razón social","email":"correo@example.com","phone":"5512345678","rfc":"AAA010101AAA","postalCode":"01000","verificationCode":"012345"}`. El código debe ser texto para conservar ceros iniciales. No lo valides por separado: el alta lo consume.
-3. El backend envía el correo de acceso y contraseña temporal al WhatsApp verificado. La API no devuelve la contraseña. No la pidas al usuario, no la copies al historial ni inicies sesión sustituyendo el perfil compartido de Hermes. El correo se conserva para recuperación/verificación secundaria; este flujo no acredita su propiedad.
-
-503 indica dependencia sin configurar. Si `accountCreated: true` y `credentialsDelivered: false`, no repitas el alta: informa que la cuenta existe y ofrece recuperación por correo. Un fallo anterior al guardado puede consumir el código: solicita otro antes de reintentar. No afirmes que el alta autentica automáticamente la conversación para facturar.
-
-El gateway puede seguir limitado por whitelist aunque el registro sea anónimo en la API. El perfil Dev no acredita ambiente de pruebas: verifica la URL del backend. Los archivos JSON con código son temporales privados, fuera del repo; elimínalos al terminar.
 
 ## Reglas de seguridad
 
