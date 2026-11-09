@@ -1,6 +1,6 @@
 ---
 name: cfdi
-description: Facturación electrónica mexicana (CFDI 4.0) con el backend de NTLink desde cualquier agente (Codex, Claude Code, OpenCode, Cursor, Hermes). Incluye scripts de Python sin dependencias para listar empresas, clientes, catálogos SAT y facturas; crear clientes; preparar PRE-CFDI; descargar PDF/XML, y timbrar o cancelar con aprobación explícita. Úsala cuando el usuario quiera crear, revisar, buscar, descargar, timbrar o cancelar una factura, o consultar datos fiscales de su cuenta NTLink.
+description: Facturación electrónica mexicana (CFDI 4.0) y registro de cuenta desde WhatsApp con el backend de NTLink, desde Codex, Claude Code, OpenCode, Cursor o Hermes. Incluye scripts de Python sin dependencias para registrar usuarios por WhatsApp, listar empresas, clientes, catálogos SAT y facturas; crear clientes; preparar PRE-CFDI; descargar PDF/XML, y timbrar o cancelar con aprobación explícita. Úsala cuando alguien quiera registrarse por WhatsApp, crear, revisar, buscar, descargar, timbrar o cancelar una factura, o consultar datos fiscales de su cuenta NTLink.
 ---
 
 # Cfdi — facturación CFDI con NTLink
