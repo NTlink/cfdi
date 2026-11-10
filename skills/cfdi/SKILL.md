@@ -61,7 +61,7 @@ python scripts/directory.py delete-customer 6942         # 409 si tiene comproba
 Para crear un cliente:
 
 1. Busca primero en `customers` si el RFC ya existe en esa empresa; si existe, ofrece actualizarlo en lugar de duplicarlo.
-2. Pide los datos fiscales que exige CFDI 4.0: RFC, razón social exacta de la constancia, régimen fiscal (`catalogs.py get RegimenFiscal`) y código postal del domicilio fiscal. Correo y domicilio son opcionales.
+2. Completa RFC, razón social, régimen fiscal (`catalogs.py get RegimenFiscal`) y código postal del domicilio fiscal con lo disponible. Si falta el régimen del receptor, aplica 601 provisional y avisa que queda pendiente de revisión, sin preguntar ese campo. Pregunta solo por otros datos obligatorios ausentes. Correo y domicilio son opcionales.
 3. Escribe el JSON con la forma de [`references/cliente.json`](references/cliente.json). `companyId` indica a qué empresa pertenece el cliente; si falta, se usa la de la sesión.
 4. Muestra los datos, confirma y ejecuta `create-customer`. La respuesta trae el `customerId` guardado. Si el RFC ya existe en la empresa o el código postal no está en el catálogo del SAT, el backend responde 400 con el motivo: corrígelo con el usuario, no lo fuerces.
 
@@ -160,7 +160,7 @@ conciliación no autoriza borrar candados ni reintentar a ciegas.
 2. Completa los datos sin preguntar:
    - **Emisor:** la cuenta por defecto (ver «Cuenta y empresas»).
    - **Receptor:** de `customers` si existe. Si no, usa los datos del documento o de la petición directamente en `receptor` (RFC, nombre, C.P. como `domicilioFiscalReceptor`, régimen y uso). No des de alta el cliente salvo que lo pidan.
-   - **Régimen del receptor:** si no viene, para persona moral (RFC de 12 caracteres) usa `601` y decláralo en la respuesta. Para persona física (13 caracteres) no hay un régimen único: si el documento no lo dice, es un dato faltante que se pide al usuario.
+   - **Régimen del receptor:** conserva el que aporte el usuario, el documento o el directorio. Si no está disponible, captura `601` por defecto, intenta preparar y guardar el PRE-CFDI y no preguntes ese régimen al usuario. Declara siempre: «Régimen fiscal del receptor: 601 aplicado por defecto; pendiente de revisión». No lo presentes como verificado ante SAT ni deducido del RFC; es una captura provisional autorizada. Si el backend rechaza esa combinación, informa el error concreto y deja pendiente la preparación, sin inventar otra clave ni repetir la pregunta por el régimen. No timbres ni omitas la revisión por haber aplicado el valor por defecto.
    - **Uso de CFDI:** el que diga el documento, traducido a su clave del catálogo `UsoCFDI` (p. ej. «adquisición de mercancías» → `G01`, «gastos en general» → `G03`). Confirma la clave en el catálogo.
    - **Claves SAT y unidad:** verificadas en los catálogos; el `ClaveProdServ` y `ClaveUnidad` que diga el documento son válidos si existen en el catálogo.
    - **Fecha:** hora local de la sucursal emisora (ver «Folios»); si el documento trae fecha, úsala.
@@ -282,6 +282,6 @@ python scripts/chat.py events RUN_ID
 
 Límites: 5 MB por archivo, XML/JSON 1 MB; tablas hasta 20 hojas, 2000 filas y 100 columnas por hoja, 10000 celdas y 120000 bytes de texto; imágenes 20 megapíxeles. Los libros grandes se rechazan sin recortar. Detalle en `references/api.md`.
 
-Al preparar desde Excel, revisa el domicilio completo antes de pedir el CP. Conserva los resultados guardados de fórmulas con advertencia; no pidas reconfirmación solo por contener fórmulas. Pregunta ante discrepancias, errores o resultados ausentes. Consulta el régimen fiscal del receptor en el directorio y pídelo si no está; no lo infieras del nombre o RFC. El backend aplica estas mismas reglas al CLI y al chat.
+Al preparar desde Excel, revisa el domicilio completo antes de pedir el CP. Conserva los resultados guardados de fórmulas con advertencia; no pidas reconfirmación solo por contener fórmulas. Pregunta ante discrepancias, errores o resultados ausentes. Si el régimen fiscal del receptor no está en el documento, petición ni directorio, usa 601 provisional con el aviso de revisión, sin preguntarlo. Al usar chat o CLI desde esta skill, incluye el 601 por defecto autorizado y su aviso en la instrucción al backend; no esperes a que lo infiera ni traslades al usuario una pregunta por ese régimen.
 
 CLI 0.2.3: lectura de adjuntos mediante el backend, incluidos Excel y XML; en Hermes usa la skill autónoma `cfdi-whatsapp` con `nt`. La instalación privada del CLI en el VPS no implica publicación npm. Los JSON de entrada admiten BOM UTF-8 tanto en los scripts Python como en los adjuntos de Go. Verificado en la API de pruebas tras el despliegue bda877b del 10/nov/2026.
