@@ -58,10 +58,14 @@ Catálogos: `ClaveProdServ`, `ClaveUnidad`, `RegimenFiscal`, `UsoCFDI`, `FormaPa
 | GET | `/api/v2/cfdis/{uuid}` | `cfdi.py get UUID` | Detalle. |
 | GET | `/api/v2/cfdis/{uuid}/status` | `cfdi.py status UUID` | Estatus ante el SAT. Hoy responde 503 «pendiente de validación y habilitación». |
 | GET | `/api/v2/cfdis/{uuid}/xml` · `/pdf` | `cfdi.py download UUID --format xml\|pdf` | Bytes del archivo. |
+| GET | `/api/v2/cfdis/{uuid}/acuse` | `cfdi.py download UUID --format acuse` | PDF del acuse de cancelación. 400 si no está cancelado; 409 si el receptor rechazó la solicitud (el CFDI volvió a vigente). |
+| GET | `/api/v2/cfdis/{uuid}/credit-note` | `cfdi.py credit-note UUID` | Egreso sin guardar: TipoRelacion 01 al UUID, G02 si el régimen del receptor lo admite (si no, el uso del ingreso), PUE y FormaPago del ingreso (sin ella si era 99). 400 si el origen no es ingreso; 409 si está cancelado. |
 | POST | `/api/v2/cfdis/validate` | `cfdi.py validate FILE.xml` | Cuerpo XML (`application/xml`) → `{"valido": "SI"|"NO", "detalles": [...]}`. |
 | POST | `/api/v2/cfdis/prepare` | `cfdi.py prepare FILE.json` | Valida y recalcula; no guarda ni emite. |
 | POST | `/api/v2/cfdis/stamp` | `cfdi.py stamp FILE.json` | **Timbra.** Efecto fiscal real. → `{"uuid","folio","idVenta","pdfGenerado","xmlRespaldadoS3","draftUpdated"}`. |
-| POST | `/api/v2/cfdis/cancel` | `cfdi.py cancel UUID --reason 01..04` | **Cancela.** Cuerpo `{"uuid","motivo","folioSustituto"}`. En pruebas responde hoy 500 «El certificador no devolvió un acuse de cancelación». |
+| POST | `/api/v2/cfdis/cancel` | `cfdi.py cancel UUID --reason 01..04` | **Cancela.** Cuerpo `{"uuid","motivo","folioSustituto"}`. Sin acuse del SAT responde 500 «Error al cancelar: motivo del PAC/SAT» y el CFDI sigue vigente. |
+| POST | `/api/v2/customer/retentions/{id}/cancel` | `cfdi.py retention-cancel ID --reason 01..04` | **Cancela una retención.** Cuerpo `{"motivo","folioSustituto"}`. |
+| GET | `/api/v2/customer/retentions/{id}/acuse` | `cfdi.py retention-acuse ID` | PDF del acuse de una retención cancelada. |
 | POST | `/api/v2/cfdis/{uuid}/send-email` | `cfdi.py email UUID --to …` | **Envía correo.** Cuerpo: arreglo de correos. En pruebas responde hoy 503 (SMTP sin configurar). |
 
 ## PRE-CFDI (borradores)
@@ -80,3 +84,14 @@ Catálogos: `ClaveProdServ`, `ClaveUnidad`, `RegimenFiscal`, `UsoCFDI`, `FormaPa
 ## Forma del JSON del comprobante
 
 Claves en camelCase, como en [`ingreso-pue.json`](ingreso-pue.json) y [`cfdi40/`](cfdi40/README.md): `version`, `serie`, `folio`, `fecha` (`YYYY-MM-DDTHH:mm:ss`, hora local de Ciudad de México, sin zona), `formaPago`, `metodoPago`, `moneda`, `tipoCambio`, `tipoDeComprobante`, `exportacion`, `lugarExpedicion`, `subtotal`, `descuento`, `total`, `emisor{rfc,nombre,regimenFiscal}`, `receptor{rfc,nombre,domicilioFiscalReceptor,regimenFiscalReceptor,usoCfdi}`, `conceptos[]{claveProdServ,cantidad,claveUnidad,unidad,descripcion,valorUnitario,importe,descuento,objetoImp,impuestos{traslados[],retenciones[]}}`, `impuestos{traslados[],retenciones[],totalImpuestosTrasladados,totalImpuestosRetenidos}`, `informacionGlobal{periodicidad,meses,anio}`, `cfdiRelacionados{tipoRelacion,cfdiRelacionado[{uuid}]}` (un solo grupo, como objeto).
+
+### Egresos y cancelaciones en las superficies
+
+El PRE-CFDI tipo E usa `cfdiRelacionados` como objeto con `tipoRelacion` y
+`cfdiRelacionado` como arreglo de objetos `uuid`. Se conserva en borradores
+y en el XML; no modifica automáticamente el saldo del documento relacionado.
+El chat ofrece `invoice.creditNote` (UUID) para abrir en el editor la nota de
+crédito prellenada desde `GET /api/v2/cfdis/{uuid}/credit-note`, sin guardarla.
+También ofrece `invoice.cancel` (UUID, from, to) para revisar en la interfaz;
+la mutación sigue en `POST /api/v2/cfdis/cancel` con uuid, motivo y
+folioSustituto para motivo 01. No se consulta estatus SAT desde esa navegación.

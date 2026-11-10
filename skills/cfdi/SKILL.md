@@ -175,8 +175,13 @@ El JSON es una muestra para preparar y revisar; nunca lo presentes como factura 
 ```sh
 python scripts/cfdi.py cancel UUID --reason 02
 python scripts/cfdi.py cancel UUID --reason 01 --replacement UUID_SUSTITUTO
+python scripts/cfdi.py download UUID --format acuse --output acuse.pdf
+python scripts/cfdi.py retention-cancel ID_RETENCION --reason 02
+python scripts/cfdi.py retention-acuse ID_RETENCION --output acuse-retencion.pdf
 python scripts/cfdi.py email UUID --to cliente@example.com
 ```
+
+El acuse PDF solo existe para un comprobante ya cancelado. Si responde 409, el receptor rechazó la solicitud y el backend regresó el CFDI a vigente: dilo así y no lo presentes como cancelado. El id de una retención es el campo `id` de `reports retentions` / `GET /api/v2/customer/retentions`.
 
 Motivos SAT: `01` con errores y relación (requiere `--replacement`), `02` con errores sin relación, `03` no se llevó a cabo la operación, `04` operación nominativa en factura global. Ambas acciones son efectos reales: confirma UUID, receptor y total con el usuario antes de ejecutarlas.
 
@@ -196,8 +201,25 @@ Scripts: `auth.py` (sesión y modo), `directory.py` (cuenta, empresas, clientes)
 - `cfdiRelacionados debe ser un objeto`: la API acepta un solo grupo, `{"tipoRelacion", "cfdiRelacionado": [{"uuid"}]}`.
 - `File exists`: el archivo de salida ya existe; elige otra ruta o usa `--force`.
 - `email` → 503 «Configura SMTP…»: el servidor no tiene correo configurado (así está hoy el entorno de pruebas). Entrega el PDF/XML descargado en su lugar.
-- `cancel` → 500 «El certificador no devolvió un acuse de cancelación»: el PAC no confirmó la cancelación y el CFDI sigue vigente. Hoy ocurre siempre en el entorno de pruebas. Comprueba con `cfdi.py list --filter uuid=UUID` (`fechaCancelacion`) y no digas que se canceló.
+- `cancel` → 500 «Error al cancelar: …»: el texto que sigue es el motivo del PAC o del SAT (en el entorno de pruebas siempre ocurre: el SAT no conoce sus CFDI y el PAC responde que no pudo consultar su estatus). El CFDI sigue vigente; compruébalo con `cfdi.py list --filter uuid=UUID` (`fechaCancelacion`) y no digas que se canceló.
 - `validate` de un CFDI timbrado en pruebas marca «Verificacion del sello del PAC: NO» porque el PAC de pruebas usa un certificado de prueba; el resto de las validaciones deben salir «SI».
 - `python` no encontrado: usa `py` (Windows) o `python3` (Linux/macOS).
 
 El CLI de Node `nt` (`npm install --global @ntlinkmx/nt`) es una alternativa opcional que usa la misma API y el mismo archivo de sesión. Los scripts no lo necesitan.
+
+## Notas de crédito y acceso desde el chat
+
+Parte de la factura de ingreso: `cfdi.py credit-note UUID --output nota.json`
+devuelve, sin guardar, un egreso con los datos del XML real, `TipoRelacion` 01
+al UUID de origen, `UsoCFDI` G02 si el régimen del receptor lo admite (si
+no, conserva el uso del ingreso), `MetodoPago` PUE y la misma `FormaPago` del
+ingreso (Anexo 20). Si el ingreso tenía `99`, la nota llega sin `formaPago`:
+pide la forma real. Ajusta conceptos e importes al monto de la devolución o
+descuento (importes positivos); el ejemplo `references/cfdi40/06-egresos.json`
+muestra la forma. Ejecuta `cfdi.py prepare nota.json` y `drafts.py create
+nota.json` tras la petición de guardado. Revisa antes de `stamp`; no hay
+descuento automático del saldo de origen. En la interfaz, Reportes de
+facturas ofrece «Crear nota de crédito» en cada ingreso vigente.
+El chat prepara ese borrador y ofrece un enlace a Cancelaciones con UUID y
+fechas; el usuario confirma allí. Los scripts y CLI pueden cancelar con
+aprobación explícita usando sus comandos existentes.
