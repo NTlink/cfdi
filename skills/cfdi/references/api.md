@@ -97,3 +97,24 @@ crédito prellenada desde `GET /api/v2/cfdis/{uuid}/credit-note`, sin guardarla.
 También ofrece `invoice.cancel` (UUID, from, to) para revisar en la interfaz;
 la mutación sigue en `POST /api/v2/cfdis/cancel` con uuid, motivo y
 folioSustituto para motivo 01. No se consulta estatus SAT desde esa navegación.
+
+
+## Adjuntos comunes — 10/nov/2026
+
+El procesamiento es centralizado: interfaz, CLI y skill envían bytes a `POST /api/v2/chat/attachments` con JWT y `X-File-Name`. No se conserva el archivo original ni se guarda un borrador por adjuntarlo.
+
+Formatos: PDF, XLSX, XLS, CSV UTF-8, XML, JSON, JPG/JPEG y PNG. Máximo 5 MB por archivo (XML/JSON: 1 MB), tres por mensaje. PDF mantiene OCR selectivo y 30 páginas. Imágenes hasta 20 megapíxeles se encapsulan localmente en PDF para compartir el OCR (el PDF intermedio también debe caber en 5 MB).
+
+Excel/CSV se leen con SheetJS CE 0.20.3 en un proceso Node aislado, sin ejecutar macros, fórmulas ni vínculos externos. Instalar con `npm ci --prefix tools/pdf-inspector` desde backend. Comparte el cupo de lectura con PDF; tablas tienen 30 segundos incluyendo espera y heap Node de 256 MB. XLSX admite hasta 1000 entradas ZIP y 20 MB descomprimidos declarados.
+
+Respuesta conserva `name`, `type`, `text`, `pages`, `engine`, `warning`, `needsReview`. Tipos nuevos: XLSX, XLS, CSV, IMAGE. En tablas, `text` contiene JSON `{sheets:[{name,hidden,cells:[{cell,value,formatted,type,formula?,hidden?}],merges:[]}]}`. Cada celda conserva su dirección; valores numéricos y formato visible viajan juntos. CSV conserva cadenas, incluidos ceros iniciales; no interpreta importes ni fechas por su cuenta. El separador lo detecta el lector. No se extraen gráficos ni imágenes incrustadas en Excel. Las fórmulas usan únicamente el valor guardado y generan advertencia; puede faltar o estar desactualizado. Hojas/filas/columnas ocultas y celdas con errores se advierten. Varias hojas requieren aclarar cuáles usar según la intención.
+
+Límites por tabla: 20 hojas, filas hasta 2000 y columnas hasta 100 por hoja, 10000 celdas con datos y 120000 bytes de texto. Se rechaza con 422 sin recortar. Archivo inválido/protegido/vacío o CSV no UTF-8: 422. Runtime ausente/agotado: 503. Texto por mensaje: 240000 bytes. El asistente interpreta las tablas, pero validación y autorización de guardado siguen en Go.
+
+Interfaz: adjuntar, revisar hojas/celdas (vista previa de 100 celdas por hoja) y analizar o recrear factura; no convierte localmente. CLI: `nt chat attach factura.xlsx` y `nt chat send SESSION_ID "Analiza discrepancias sin guardar" --attach factura.xlsx`. Skill: `py scripts/chat.py attach factura.xlsx`, `create-session`, `send SESSION_ID "Analiza discrepancias sin guardar" --attach factura.xlsx` y `events RUN_ID`.
+
+Al preparar desde Excel, revisa el domicilio completo antes de pedir el CP. Conserva los resultados guardados de fórmulas con advertencia; no pidas reconfirmación solo por contener fórmulas. Pregunta ante discrepancias, errores o resultados ausentes. Consulta el régimen fiscal del receptor en el directorio y pídelo si no está; no lo infieras del nombre o RFC. El backend aplica estas mismas reglas al CLI y al chat.
+
+En Excel, fórmulas con resultado guardado generan advertencia informativa; `needsReview` solo se activa ante resultados ausentes, errores, contenido oculto o varias hojas.
+
+CLI 0.2.3: lectura de adjuntos mediante el backend, incluidos Excel y XML; en Hermes usa la skill autónoma `cfdi-whatsapp` con `nt`. La instalación privada del CLI en el VPS no implica publicación npm. Los JSON de entrada admiten BOM UTF-8 tanto en los scripts Python como en los adjuntos de Go. Verificado en la API de pruebas tras el despliegue bda877b del 10/nov/2026.

@@ -265,3 +265,23 @@ facturas ofrece «Crear nota de crédito» en cada ingreso vigente.
 El chat prepara ese borrador y ofrece un enlace a Cancelaciones con UUID y
 fechas; el usuario confirma allí. Los scripts y CLI pueden cancelar con
 aprobación explícita usando sus comandos existentes.
+
+
+## Leer documentos y analizarlos por chat
+
+Usa el backend para extraer PDF, Excel XLSX/XLS, CSV UTF-8, XML, JSON y JPG/PNG. No instales lectores ni conviertas estos archivos localmente.
+
+```sh
+python scripts/chat.py attach factura.xlsx
+python scripts/chat.py create-session
+python scripts/chat.py send SESSION_ID "Analiza discrepancias sin guardar" --attach factura.xlsx
+python scripts/chat.py events RUN_ID
+```
+
+`attach` devuelve el adjunto JSON, sin guardar borradores. `send` acepta hasta tres `--attach`, devuelve el run y admite `--request-id UUID` para conservar identidad ante reintentos. `events` devuelve el SSE como texto JSON; espera hasta finalizar. Revisa la sesión y sus borradores antes de repetir una intención con otro UUID tras un fallo. Excel/CSV conservan hojas, celdas, valores originales y formato visible en `text` (JSON). Revisa advertencias: fórmulas sin recalcular, valores ausentes, errores y contenido oculto. Aclara hojas/tablas ambiguas. Adjuntar o pedir análisis no autoriza guardar; preparar un borrador requiere petición expresa. No timbra ni cancela.
+
+Límites: 5 MB por archivo, XML/JSON 1 MB; tablas hasta 20 hojas, 2000 filas y 100 columnas por hoja, 10000 celdas y 120000 bytes de texto; imágenes 20 megapíxeles. Los libros grandes se rechazan sin recortar. Detalle en `references/api.md`.
+
+Al preparar desde Excel, revisa el domicilio completo antes de pedir el CP. Conserva los resultados guardados de fórmulas con advertencia; no pidas reconfirmación solo por contener fórmulas. Pregunta ante discrepancias, errores o resultados ausentes. Consulta el régimen fiscal del receptor en el directorio y pídelo si no está; no lo infieras del nombre o RFC. El backend aplica estas mismas reglas al CLI y al chat.
+
+CLI 0.2.3: lectura de adjuntos mediante el backend, incluidos Excel y XML; en Hermes usa la skill autónoma `cfdi-whatsapp` con `nt`. La instalación privada del CLI en el VPS no implica publicación npm. Los JSON de entrada admiten BOM UTF-8 tanto en los scripts Python como en los adjuntos de Go. Verificado en la API de pruebas tras el despliegue bda877b del 10/nov/2026.

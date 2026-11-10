@@ -118,7 +118,7 @@ def login(email, password):
     return session
 
 
-def request(method, path, query=None, json_body=None, raw_body=None, content_type=None, anonymous=False, output=None, force=False):
+def request(method, path, query=None, json_body=None, raw_body=None, content_type=None, anonymous=False, output=None, force=False, file_name=None):
     """Call the backend. Returns parsed JSON, text, or {path, bytes} when output is set."""
     name, base_url, token, timeout = settings()
     if not path.startswith("/") or path.startswith("//"):
@@ -127,6 +127,8 @@ def request(method, path, query=None, json_body=None, raw_body=None, content_typ
     if query:
         url += "?" + urllib.parse.urlencode([(k, v) for k, v in query if v is not None])
     headers = {}
+    if file_name is not None:
+        headers["X-File-Name"] = urllib.parse.quote(os.path.basename(file_name), safe="")
     if not anonymous:
         if not token and base_url == TEST_BASE_URL and name == "pruebas":
             token = login(TEST_ACCOUNT["email"], TEST_ACCOUNT["password"])["token"]
