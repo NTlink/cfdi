@@ -4,6 +4,8 @@ Las rutas que usan los scripts. Todas, salvo `auth/login`, requieren `Authorizat
 
 Base de pruebas: `http://pruebas.ntlink.com.mx:8092`. Producción todavía no existe.
 
+Estado en pruebas, comprobado el 9/nov/2026 (`/health/live` responde `staging`): responden PRE-CFDI (list, get, create, update, PDF, XML), `drafts.py next-folio`, catálogos, clientes, empresas, saldo, `cfdis` list/get/validate, `status` (503 esperado) y `customer/retentions` (listado). No responden todavía: `pre-cfdis/zona-expedicion` (404; la ruta sí está en HEAD, así que la VPS va atrasada), `cfdis/{uuid}/credit-note` y `cfdis/{uuid}/acuse` (405) y `customer/retentions/{id}/acuse` (404). Estas rutas no se probaron con cancelación real a propósito.
+
 Timbrado `/api/v2/cfdis/stamp` y `/api/v2/pre-cfdis/{id}/stamp`: fecha inválida
 o futura y folio distinto del siguiente de la emisora devuelven 400 con mensaje
 específico antes del PAC y del diario. Usa la hora local de la sucursal (zona de su estado; `GET /api/v2/pre-cfdis/zona-expedicion?cp=CP`) sin Z/offset y consulta

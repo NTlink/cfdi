@@ -21,10 +21,18 @@ El token se guarda en `~/.ntlink-invoice/config.json` (Windows: `%USERPROFILE%\.
 ## Reglas de seguridad
 
 - **Lecturas** (listar, consultar, descargar, `prepare`, `validate`): ejecútalas sin pedir permiso.
-- **Escrituras** (crear o modificar clientes y PRE-CFDI): confirma con el usuario qué vas a guardar.
+- **PRE-CFDI** (`drafts.py create` / `update`): no tiene validez fiscal. Si la petición ya trae todos los datos (o un documento que los contiene), créalo de inmediato y entrega el PDF, sin pedir confirmación ni preguntar por datos que el documento ya dice.
+- **Clientes** (`create-customer`, `update-customer`): confirma con el usuario antes de guardar.
 - **Efectos fiscales o externos** (`stamp`, `cancel`, `email`): solo después de revisión y aprobación explícita (ver «Timbrar»). Comprueba antes `auth.py mode`; el nombre del perfil no demuestra que el PAC sea sandbox.
 - Si una escritura falla con 401 o se corta, no la repitas a ciegas: consulta primero si ya tuvo efecto (`drafts.py list`, `cfdi.py list`).
-- Leer un PDF o XML no autoriza guardarlo, convertirlo en borrador ni emitirlo. Analízalo tú mismo, presenta el resultado y pregunta antes de persistir. Si una lectura es dudosa (OCR, importes que no cuadran), dilo y pregunta los datos faltantes.
+- Leer un documento (PDF, XLSX, XML) para convertirlo en factura sí autoriza crear el PRE-CFDI, pero nunca timbrar ni cancelar. Si el documento ya indica el tratamiento de impuestos (IVA sí/no, retención), sigue lo que dice sin preguntar.
+- Si una lectura es dudosa (OCR, celdas con valores ocultos), di qué valor usaste y por qué.
+
+## Prioridad: entregar el PRE-CFDI cuanto antes
+
+El camino normal es: leer los datos → completar lo que falte con los valores por defecto de abajo → `prepare` → revisar → `drafts.py create` → entregar el PDF. Pregunta solo si, después de intentar completar, falta un dato que no se puede inferir (por ejemplo, el RFC del receptor o los conceptos). En ese caso di exactamente qué falta, por qué no se puede deducir y si el usuario puede proporcionarlo; si no puede, indícalo y no inventes el dato.
+
+No pidas datos que ya están en la cuenta o en el documento, ni confirmes decisiones que tienen un valor por defecto razonable: aplícalas, decláralas en la respuesta final y deja que el usuario las corrija.
 
 ## Cuenta y empresas
 
@@ -35,7 +43,9 @@ python scripts/directory.py companies      # empresas emisoras (companyId, rfc, 
 python scripts/directory.py company 7975   # detalle de una empresa
 ```
 
-Usa `companies` para elegir el emisor: el `rfc` va en `emisor.rfc` del comprobante y el `companyId` sirve para filtrar listas o asignar clientes.
+**Emisor por defecto:** el emisor es la cuenta con la que estás conectado, no algo que se pregunte. `directory.py account` devuelve su `rfc` y `razonSocial`; `directory.py companies` da el `companyId` cuyo `rfc` coincide. En pruebas la cuenta es URE (`URE180429TM6`, companyId 7975), así que todo comprobante de prueba sale a nombre de UNIVERSIDAD ROBOTICA ESPAÑOLA SA DE CV. En producción será la empresa del cliente que usa la skill; el mismo procedimiento aplica. Solo pregunta por otro emisor si el usuario lo pide explícitamente.
+
+El `rfc` va en `emisor.rfc` del comprobante. La clave de `emisor.regimenFiscal` sale del catálogo `RegimenFiscal` (en la cuenta de pruebas: `601`).
 
 ## Clientes
 
@@ -82,6 +92,10 @@ python scripts/cfdi.py validate factura.xml
 
 `status` (consulta de estatus ante el SAT) responde 503 mientras el backend no la habilite; dilo así y no lo interpretes como un CFDI cancelado. `validate` revisa estructura, certificado y sello: los XML de `references/cfdi40/` son muestras y su sello no es válido.
 
+En `list`, los valores de `status` que se ven en pruebas son `PAGADO` y `PENDIENTE`: son estados locales del listado, no el estatus ante el SAT. `--filter status=VIGENTE` no devuelve filas.
+
+Si `download` responde 404 «Archivo no encontrado en Azure», el backend no tiene guardado el PDF o XML de ese CFDI. No hay otra fuente: dilo y no inventes el archivo.
+
 ## Descargar PDF y XML
 
 ```sh
@@ -125,7 +139,7 @@ devuelve `timeZone` (p. ej. `America/Tijuana` para Baja California). Úsala con
 `datetime.now(ZoneInfo(timeZone)).strftime('%Y-%m-%dT%H:%M:%S')`, con
 `from datetime import datetime; from zoneinfo import ZoneInfo`. No uses `utcnow()`,
 `toISOString()` ni borres la Z de una hora UTC: quitar la zona no convierte la hora.
-Si el servidor no conoce la zona, usa `America/Mexico_City`. Si faltan zonas
+Si el servidor no conoce la zona, usa `America/Mexico_City`. Si `zone` responde 404, ese backend no tiene la ruta desplegada: usa `America/Mexico_City` solo para sucursales de CDMX o Aguascalientes, y dilo en la respuesta. Si faltan zonas
 horarias, resuélvelo antes de emitir; no adivines la hora. No reutilices fechas
 de ejemplos antiguos. El backend rechaza fechas inválidas o futuras
 antes del PAC. Corrige el mismo borrador y vuelve a revisar; un 409 de
@@ -143,9 +157,36 @@ conciliación no autoriza borrar candados ni reintentar a ciegas.
 ## Preparar un comprobante
 
 1. Elige el ejemplo más cercano en [`references/cfdi40/`](references/cfdi40/README.md) (20 casos: ingreso, egreso, traslado, IVA 0/8/16%, exento, retenciones, RESICO, factura global, extranjero, a cuenta de terceros, objetoImp 01–08) o [`references/ingreso-pue.json`](references/ingreso-pue.json).
-2. Ajusta emisor (de `companies`), receptor (de `customers`), conceptos y claves verificadas en los catálogos. Si el usuario no da fecha, usa la hora local de Ciudad de México con el formato `YYYY-MM-DDTHH:mm:ss`, sin `Z` ni zona.
-3. Ejecuta `python scripts/cfdi.py prepare cfdi.json`: valida y recalcula importes sin guardar. Usa los totales que devuelve.
-4. Para guardarlo como borrador usa `drafts.py create`.
+2. Completa los datos sin preguntar:
+   - **Emisor:** la cuenta por defecto (ver «Cuenta y empresas»).
+   - **Receptor:** de `customers` si existe. Si no, usa los datos del documento o de la petición directamente en `receptor` (RFC, nombre, C.P. como `domicilioFiscalReceptor`, régimen y uso). No des de alta el cliente salvo que lo pidan.
+   - **Régimen del receptor:** si no viene, para persona moral (RFC de 12 caracteres) usa `601` y decláralo en la respuesta. Para persona física (13 caracteres) no hay un régimen único: si el documento no lo dice, es un dato faltante que se pide al usuario.
+   - **Uso de CFDI:** el que diga el documento, traducido a su clave del catálogo `UsoCFDI` (p. ej. «adquisición de mercancías» → `G01`, «gastos en general» → `G03`). Confirma la clave en el catálogo.
+   - **Claves SAT y unidad:** verificadas en los catálogos; el `ClaveProdServ` y `ClaveUnidad` que diga el documento son válidos si existen en el catálogo.
+   - **Fecha:** hora local de la sucursal emisora (ver «Folios»); si el documento trae fecha, úsala.
+   - **Folio:** `drafts.py next-folio --company COMPANY_ID`.
+3. Aplica el tratamiento de impuestos (ver «Cuadrar impuestos con un total») y ejecuta `python scripts/cfdi.py prepare cfdi.json`. Usa los totales que devuelve.
+4. **Revisión antes de guardar** (sin preguntar al usuario). Guardar un PRE-CFDI lo deja en la base de datos, así que esta revisión va antes de `drafts.py create`:
+   - Compara el JSON preparado con lo que pidió el usuario: emisor (la cuenta), receptor, conceptos, cantidades, claves, fecha, folio y forma/método de pago.
+   - Verifica la aritmética: subtotal − retenciones + traslados = total, y cada impuesto = base × tasa, redondeado a centavos.
+   - Comprueba que las claves SAT existen en su catálogo y que el folio es el que devolvió `next-folio`.
+   - Si hay un error claro (un redondeo, un campo mal copiado), corrígelo en el JSON y vuelve a ejecutar `prepare`. Si el error necesita una decisión del usuario, no guardes: pregunta solo ese punto.
+5. Guarda el PRE-CFDI con `drafts.py create` y entrega el PDF. Tras guardar, confirma que el PDF empieza con `%PDF` y no está vacío.
+6. En la respuesta final di en una línea qué revisaste y el resultado.
+
+**Estilo para usuarios finales:** respuestas simples y cortas. Si falta un dato, pregunta en una o dos frases, sin explicaciones largas ni listas de posibilidades.
+
+### Cuadrar impuestos con un total
+
+Si el documento o la petición dan un total, los impuestos deben cuadrar con él. Orden de decisión:
+
+1. **El documento dice el tratamiento** (p. ej. «sin IVA», «IVA 16%», «retención ISR 1.25%»): aplícalo tal cual, aunque no cuadre con el total de la hoja. Si el total no cuadra, muestra el total calculado y la diferencia, no lo fuerces.
+2. **El documento solo da un total y un subtotal:** prueba, en este orden, IVA 16% sobre el subtotal, IVA incluido en el precio (base = total / 1.16) y sin IVA; quédate con el que cuadre con el total, y si hay retención (`ObjetoImp 02`, `001`, `0.0125` para ISR 1.25%) inclúyela solo si el total lo exige. Declara el que elegiste.
+3. **Sin total ni tratamiento:** IVA 16% sobre el subtotal, sin retenciones.
+
+Redondea IVA y retenciones a centavos antes de comparar. Si el total calculado difiere del documento por centavos, usa el calculado y dilo.
+
+En el JSON, la retención va en `conceptos[].impuestos.retenciones` (con `objetoImp` `02`) y en `impuestos.retenciones` con `totalImpuestosRetenidos`. Un concepto sin IVA ni retención lleva `objetoImp` `01`; si tiene retención o traslado, `02`.
 
 La forma completa del JSON está en [`references/api.md`](references/api.md#forma-del-json-del-comprobante).
 
@@ -203,6 +244,7 @@ Scripts: `auth.py` (sesión y modo), `directory.py` (cuenta, empresas, clientes)
 - `email` → 503 «Configura SMTP…»: el servidor no tiene correo configurado (así está hoy el entorno de pruebas). Entrega el PDF/XML descargado en su lugar.
 - `cancel` → 500 «Error al cancelar: …»: el texto que sigue es el motivo del PAC o del SAT (en el entorno de pruebas siempre ocurre: el SAT no conoce sus CFDI y el PAC responde que no pudo consultar su estatus). El CFDI sigue vigente; compruébalo con `cfdi.py list --filter uuid=UUID` (`fechaCancelacion`) y no digas que se canceló.
 - `validate` de un CFDI timbrado en pruebas marca «Verificacion del sello del PAC: NO» porque el PAC de pruebas usa un certificado de prueba; el resto de las validaciones deben salir «SI».
+- `404 «Ruta de portal no encontrada»` o `405` en `credit-note`, `download --format acuse`, `retention-acuse` o `drafts.py zone`: el backend no tiene desplegada esa ruta. Con la versión de pruebas del 9/nov/2026 ocurre así. Dilo tal cual, no reintentes en bucle y no simules el resultado.
 - `python` no encontrado: usa `py` (Windows) o `python3` (Linux/macOS).
 
 El CLI de Node `nt` (`npm install --global @ntlinkmx/nt`) es una alternativa opcional que usa la misma API y el mismo archivo de sesión. Los scripts no lo necesitan.
